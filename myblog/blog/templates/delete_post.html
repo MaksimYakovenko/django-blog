@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Blog Post</title>
+</head>
+<body>
+{% extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <h1>Delete Blog Post</h1>
+    <br/><br/>
+    <h3>Delete: {{ post.title }}</h3>
+    <br/>
+    <form method="POST">
+        {% csrf_token %}
+        <strong>Are you sure?</strong><br/><br/>
+        <button class="btn btn-secondary">Delete Post</button>
+    </form>
+{% else %}
+    <h3>You're not allowed here</h3>
+{% endif %}
+{% endblock %}
+</body>
+</html>
