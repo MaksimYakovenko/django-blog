@@ -9,13 +9,17 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-    <h1>Update Blog Post</h1>
-    <br/><br/>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_ul }}
-        <button class="btn btn-secondary">Update</button>
-    </form>
+    {% if user.id == post.author.id %}
+        <h1>Update Blog Post</h1>
+        <br/><br/>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_ul }}
+            <button class="btn btn-secondary">Update</button>
+        </form>
+    {% else %}
+        <h3>You're not allowed here!</h3>
+    {% endif %}
 {% else %}
     <h3>You're not allowed here!</h3>
 {% endif %}

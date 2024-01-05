@@ -16,6 +16,10 @@
         {{ form.as_ul }}
         <button class="btn btn-secondary">Post</button>
     </form>
+<script>
+    var name = '{{ user.id }}';
+    document.getElementById('yakovenko').value=name;
+</script>
 {% else %}
     <h3>You're not allowed here!</h3>
 {% endif %}
