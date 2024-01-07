@@ -6,6 +6,7 @@
 </head>
 <body>
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}{{ post.title_tag }}{% endblock %}
 
 {% block content %}
@@ -15,15 +16,17 @@
     {{ post.author.last_name }} -
     {{ post.post_date }}
     {% if user.is_authenticated %}
-        {% if user.id == post.author.id %}
-            - <a href="{% url 'update_post' post.pk %}">(Edit)</a>
-            <a href="{% url 'delete_post' post.pk %}">(Delete)</a>
-        {% endif %}
+    {% if user.id == post.author.id %}
+    - <a href="{% url 'update_post' post.pk %}">(Edit)</a>
+    <a href="{% url 'delete_post' post.pk %}">(Delete)</a>
+    {% endif %}
     {% endif %}
 </small> <br/>
 <hr>
 <br/>
+{% if post.header_image %}
 <img src="{{ post.header_image.url }}">
+{% endif %}
 <br/><br/>
 {{ post.body|safe }}
 
@@ -35,16 +38,54 @@
 <form action="{% url 'like_post' post.pk %}" method="POST">
     {% csrf_token %}
     {% if user.is_authenticated %}
-        {% if liked %}
-            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger">Unlike</button>
-        {% else %}
-            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-success">Like</button>
-        {% endif %}
-    {% else %}
-        Login to you account to like this post
+    {% if liked and user.id != post.author.id %}
+    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger">Unlike</button> -
+    {% elif user.id != post.author.id %}
+    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-success">Like</button> -
     {% endif %}
-        - {{ total_likes }} Likes
+    {% else %}
+    Login to your account to like this post -
+    {% endif %}
+    {{ total_likes }} Likes
 </form>
+<br/><br/>
+
+<div class="card mb-3">
+    <div class="row no-gutters">
+        <div class="col-md-2">
+{% if post.author.profile.profile_pic %}
+    <img src="{{ post.author.profile.profile_pic.url }}" class="card-img" width="200" height="200">
+{% else %}
+    <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img" width="200" height="200">
+{% endif %}
+        </div>
+        <div class="col-md-10">
+            <div class="card-body">
+                <h5 class="card-title">{{ post.author.first_name }}
+                    {{ post.author.last_name }}
+                </h5>
+                <p class="small text-muted">
+                    {% if post.author.profile.website_url %}
+                        <a href="{{ post.author.profile.website_url }}">Website</a>
+                    {% endif %}
+
+                    {% if post.author.profile.instagram_url %}
+                        | <a href="{{ post.author.profile.instagram_url }}">Instagram</a>
+                    {% endif %}
+
+                    {% if post.author.profile.twitter_url %}
+                        | <a href="{{ post.author.profile.twitter_url }}">Twitter</a>
+                    {% endif %}
+
+                    {% if post.author.profile.facebook_url %}
+                        | <a href="{{ post.author.profile.facebook_url }}">Facebook</a>
+                    {% endif %}
+                </p>
+                <p class="card-text">{{ post.author.profile.bio }}</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 </body>
 </html>
