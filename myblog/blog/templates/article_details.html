@@ -30,9 +30,7 @@
 <br/><br/>
 {{ post.body|safe }}
 
-<br/><br/>
-<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
-<br/><br/>
+
 <hr>
 <br/>
 <form action="{% url 'like_post' post.pk %}" method="POST">
@@ -44,12 +42,12 @@
     <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-success">Like</button> -
     {% endif %}
     {% else %}
-    Login to your account to like this post -
+    <a href="{% url 'login' %}">Login to your account to like this post</a> -
     {% endif %}
     {{ total_likes }} Likes
 </form>
-<br/><br/>
 
+<hr>
 <div class="card mb-3">
     <div class="row no-gutters">
         <div class="col-md-2">
@@ -65,7 +63,8 @@
                     {{ post.author.last_name }}
                 </h5>
                 <p class="small text-muted">
-                    <a href="{% url 'show_profile_page' user.profile.id %}">Profile Page</a>
+                    {% if post.author.profile %}
+                    <a href="{% url 'show_profile_page' post.author.profile.id %}">Profile Page</a>
                     {% if post.author.profile.website_url %}
                     | <a href="{{ post.author.profile.website_url }}">Website</a>
                     {% endif %}
@@ -81,12 +80,35 @@
                     {% if post.author.profile.facebook_url %}
                     | <a href="{{ post.author.profile.facebook_url }}">Facebook</a>
                     {% endif %}
+                    {% endif %}
                 </p>
                 <p class="card-text">{{ post.author.profile.bio }}</p>
             </div>
         </div>
     </div>
 </div>
+<br/><br/>
+<h2>Comments</h2>
+<br>
+{% if not post.comments.all %}
+    No Comments Yet. <a href="{% url 'add_comment' post.pk %}">Add One</a>
+{% else %}
+<br/><br/>
+    {% for comment in post.comments.all %}
+    <strong>
+        {{ comment.name }} -
+        {{ comment.date_added }}
+    </strong>
+    <br/>
+    {{ comment.body }}
+    <br/><br/>
+    {% endfor %}
+        <a href="{% url 'add_comment' post.pk %}">Add Comment</a>
+{% endif %}
+<hr>
+<br/><br/>
+
+<br/><br/>
 {% endblock %}
 </body>
 </html>
