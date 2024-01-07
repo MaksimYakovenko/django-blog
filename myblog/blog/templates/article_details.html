@@ -65,20 +65,21 @@
                     {{ post.author.last_name }}
                 </h5>
                 <p class="small text-muted">
+                    <a href="{% url 'show_profile_page' user.profile.id %}">Profile Page</a>
                     {% if post.author.profile.website_url %}
-                        <a href="{{ post.author.profile.website_url }}">Website</a>
+                    | <a href="{{ post.author.profile.website_url }}">Website</a>
                     {% endif %}
 
                     {% if post.author.profile.instagram_url %}
-                        | <a href="{{ post.author.profile.instagram_url }}">Instagram</a>
+                    | <a href="{{ post.author.profile.instagram_url }}">Instagram</a>
                     {% endif %}
 
                     {% if post.author.profile.twitter_url %}
-                        | <a href="{{ post.author.profile.twitter_url }}">Twitter</a>
+                    | <a href="{{ post.author.profile.twitter_url }}">Twitter</a>
                     {% endif %}
 
                     {% if post.author.profile.facebook_url %}
-                        | <a href="{{ post.author.profile.facebook_url }}">Facebook</a>
+                    | <a href="{{ post.author.profile.facebook_url }}">Facebook</a>
                     {% endif %}
                 </p>
                 <p class="card-text">{{ post.author.profile.bio }}</p>

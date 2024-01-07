@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile Page</title>
+</head>
+<body>
+{% extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+{% if user.id == profile.user.id %}
+<h1>Edit Profile Page</h1>
+<br/><br/>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-secondary">Update Profile Page</button>
+</form>
+<script>
+    var name = '{{ user.id }}';
+    document.getElementById('yakovenko').value = name;
+</script>
+{% else %}
+<h3>You are not the correct User to Edit this Page</h3>
+{% endif %}
+{% else %}
+<h3>You're not allowed here!</h3>
+{% endif %}
+{% endblock %}
+</body>
+</html>
