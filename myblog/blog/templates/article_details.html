@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
 </head>
 <body>
 {% extends 'base.html' %}
 {% load static %}
+{% load set_var %}
 {% block title %}{{ post.title_tag }}{% endblock %}
 
 {% block content %}
@@ -33,29 +35,85 @@
 
 <hr>
 <br/>
-<form action="{% url 'like_post' post.pk %}" method="POST">
+
+<form action="{% url 'post-feedback' post.pk %}" method="POST" style="display: inline;">
     {% csrf_token %}
     {% if user.is_authenticated %}
-    {% if liked and user.id != post.author.id %}
-    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger">Unlike</button> -
-    {% elif user.id != post.author.id %}
-    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-success">Like</button> -
-    {% endif %}
+        {% if user.id != post.author.id %}
+            {% if feedback == 'like' %}
+                {% set like = "btn-success disabled" %}
+                {% set dislike = "btn-like" %}
+            {% elif feedback == 'dislike' %}
+                {% set like = "btn-like" %}
+                {% set dislike = "btn-danger disabled" %}
+            {% else %}
+                {% set like = "btn-like" %}
+                {% set dislike = "btn-like" %}
+            {% endif %}
+            <button type="submit" name="feedback" value="like" class="btn {{like}}">
+                Like
+            </button>
+            - {{ post.total_likes }} Likes
+            <button type="submit" name="feedback" value="dislike" class="btn {{dislike}}">
+                Dislike
+            </button>
+            - {{ post.total_dislikes }} Dislikes
+        {% else %}
+            {{ post.total_likes }} Likes  {{ post.total_dislikes }} Dislikes
+        {% endif %}
     {% else %}
-    <a href="{% url 'login' %}">Login to your account to like this post</a> -
+        <a href="{% url 'login' %}">Login to like/dislike</a>
+        <br>
+        {{ post.total_likes }} Likes  {{ post.total_dislikes }} Dislikes
     {% endif %}
-    {{ total_likes }} Likes
+
 </form>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!--<script>-->
+<!--    $(document).ready(function () {-->
+<!--        $('button.likeButton, button.dislikeButton').click(function (e) {-->
+<!--            e.preventDefault();-->
+<!--            var button = $(this);-->
+<!--            var postId = button.val();-->
+<!--            var oppositeButton = button.hasClass('likeButton') ? '.dislikeButton' : '.likeButton';-->
+
+<!--            // Check if the opposite button is active, and deactivate it-->
+<!--            if ($(oppositeButton + '[data-id="' + postId + '"]').hasClass('btn-like') ||-->
+<!--                $(oppositeButton + '[data-id="' + postId + '"]').hasClass('btn-danger')) {-->
+<!--                $(oppositeButton + '[data-id="' + postId + '"]').removeClass('btn-like btn-danger');-->
+<!--                var oppositeCountElement = $('#' + (button.hasClass('likeButton') ? 'dislike' : 'like') + 'Count_' + postId);-->
+<!--                var oppositeCount = parseInt(oppositeCountElement.text());-->
+<!--                oppositeCountElement.text(oppositeCount - 1);-->
+<!--            }-->
+
+<!--            // Toggle the state of the current button-->
+<!--            button.toggleClass('btn-like btn-danger');-->
+<!--            var action = button.hasClass('likeButton') ? 'like' : 'dislike';-->
+<!--            var countElement = $('#' + action + 'Count_' + postId);-->
+<!--            var count = parseInt(countElement.text());-->
+
+<!--            // Update the count based on the button state-->
+<!--            if (button.hasClass('btn-like')) {-->
+<!--                countElement.text(count - 1);-->
+<!--            } else {-->
+<!--                countElement.text(count + 1);-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 
 <hr>
 <div class="card mb-3">
     <div class="row no-gutters">
         <div class="col-md-2">
-{% if post.author.profile.profile_pic %}
-    <img src="{{ post.author.profile.profile_pic.url }}" class="card-img" width="200" height="200">
-{% else %}
-    <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img" width="200" height="200">
-{% endif %}
+            {% if post.author.profile.profile_pic %}
+            <img src="{{ post.author.profile.profile_pic.url }}" class="card-img" width="200" height="200">
+            {% else %}
+            <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img" width="200" height="200">
+            {% endif %}
         </div>
         <div class="col-md-10">
             <div class="card-body">
@@ -90,21 +148,27 @@
 <br/><br/>
 <h2>Comments</h2>
 <br>
+{% if user.is_authenticated %}
 {% if not post.comments.all %}
-    No Comments Yet. <a href="{% url 'add_comment' post.pk %}">Add One</a>
+No Comments Yet. <a href="{% url 'add_comment' post.pk %}">Add One</a>
 {% else %}
 <br/><br/>
-    {% for comment in post.comments.all %}
-    <strong>
-        {{ comment.name }} -
-        {{ comment.date_added }}
-    </strong>
-    <br/>
-    {{ comment.body }}
-    <br/><br/>
-    {% endfor %}
-        <a href="{% url 'add_comment' post.pk %}">Add Comment</a>
+{% for comment in post.comments.all %}
+<strong>
+    {{ comment.name }} -
+    {{ comment.date_added }}
+</strong>
+<br/>
+{{ comment.body }}
+<br/><br/>
+{% endfor %}
+<a href="{% url 'add_comment' post.pk %}">Add Comment</a>
 {% endif %}
+{% else %}
+<p>Log in to your account to add comments. <a href="{% url 'login' %}">Login</a></p>
+{% endif %}
+
+
 <hr>
 <br/><br/>
 

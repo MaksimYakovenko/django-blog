@@ -43,9 +43,13 @@ class Post(models.Model):
     category = models.CharField(max_length=255, default='uncategorized')
     snippet = models.CharField(max_length=255)
     likes = models.ManyToManyField(User, related_name='blog_posts')
+    dislikes = models.ManyToManyField(User, related_name='dislike_post')
 
     def total_likes(self):
         return self.likes.count()
+
+    def total_dislikes(self):
+        return self.dislikes.count()
 
     def __str__(self):
         return self.title + ' | ' + str(self.author)

@@ -10,15 +10,27 @@ from django.http import HttpResponseRedirect
 # def home(request):
 #     return render(request, 'home.html', {})
 
-def LikeView(request, pk):
-    post = get_object_or_404(Post, id=request.POST.get('post_id'))
-    liked = False
-    if post.likes.filter(id=request.user.id).exists():
-        post.likes.remove(request.user)
-        liked = False
-    else:
-        post.likes.add(request.user)
-        liked = True
+
+def LikeDislikeView(request, pk):
+    feedback = request.POST.get('feedback')
+    post = get_object_or_404(Post, id=pk)
+    if feedback == 'like':
+        if post.likes.filter(id=request.user.id).exists():
+            post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+
+        if post.dislikes.filter(id=request.user.id).exists():
+            post.dislikes.remove(request.user)
+    elif feedback == 'dislike':
+        if post.dislikes.filter(id=request.user.id).exists():
+            post.dislikes.remove(request.user)
+        else:
+            post.dislikes.add(request.user)
+
+        if post.likes.filter(id=request.user.id).exists():
+            post.likes.remove(request.user)
+
     return HttpResponseRedirect(reverse('article-detail', args=[str(pk)]))
 
 
@@ -57,13 +69,19 @@ class ArticleDetailView(DetailView):
                                                                   **kwargs)
         stuff = get_object_or_404(Post, id=self.kwargs['pk'])
         total_likes = stuff.total_likes()
-        liked = False
+        total_dislikes = stuff.total_dislikes()
+
         if stuff.likes.filter(id=self.request.user.id).exists():
-            liked = True
+            feedback = 'like'
+        elif stuff.dislikes.filter(id=self.request.user.id).exists():
+            feedback = 'dislike'
+        else:
+            feedback = ''
 
         context['cat_menu'] = cat_menu
         context['total_likes'] = total_likes
-        context['liked'] = liked
+        context['total_dislikes'] = total_dislikes
+        context['feedback'] = feedback
         return context
 
 
@@ -78,13 +96,14 @@ class AddCommentView(CreateView):
     model = Comment
     form_class = CommentForm
     template_name = 'add_comment.html'
+
     # fields = '__all__'
     def form_valid(self, form):
         form.instance.post_id = self.kwargs['pk']
+        form.instance.name = f"{self.request.user.first_name} {self.request.user.last_name}"
         return super().form_valid(form)
 
     success_url = reverse_lazy('home')
-
 
 
 class AddCategoryView(CreateView):
