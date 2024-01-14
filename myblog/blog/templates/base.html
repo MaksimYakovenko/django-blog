@@ -40,7 +40,13 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'category-list' %}">Categories</a>
             </li>
+
             {% endif %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'rating-list' %}">Posts Rating</a>
+            </li>
+
             {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'add_post' %}">Add Post</a>
@@ -49,6 +55,8 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'add_category' %}">Add Category</a>
             </li>
+
+
 
             {% else %}
             <li class="nav-item">
@@ -59,6 +67,7 @@
             </li>
             {% endif %}
         </ul>
+
         {% if user.is_authenticated %}
         <ul class="navbar-nav ml-auto">
 

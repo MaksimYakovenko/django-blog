@@ -51,6 +51,9 @@ class Post(models.Model):
     def total_dislikes(self):
         return self.dislikes.count()
 
+    def total_rating(self):
+        return self.total_likes() - self.total_dislikes()
+
     def __str__(self):
         return self.title + ' | ' + str(self.author)
 

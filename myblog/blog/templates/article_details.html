@@ -148,27 +148,26 @@
 <br/><br/>
 <h2>Comments</h2>
 <br>
-{% if user.is_authenticated %}
 {% if not post.comments.all %}
-No Comments Yet. <a href="{% url 'add_comment' post.pk %}">Add One</a>
+    No Comments Yet.
 {% else %}
-<br/><br/>
-{% for comment in post.comments.all %}
-<strong>
-    {{ comment.name }} -
-    {{ comment.date_added }}
-</strong>
-<br/>
-{{ comment.body }}
-<br/><br/>
-{% endfor %}
-<a href="{% url 'add_comment' post.pk %}">Add Comment</a>
-{% endif %}
-{% else %}
-<p>Log in to your account to add comments. <a href="{% url 'login' %}">Login</a></p>
+    <br/><br/>
+    {% for comment in post.comments.all %}
+        <strong>
+            {{ comment.name }} -
+            {{ comment.date_added }}
+        </strong>
+        <br/>
+        {{ comment.body }}
+        <br/><br/>
+    {% endfor %}
 {% endif %}
 
-
+{% if user.is_authenticated %}
+    <a href="{% url 'add_comment' post.pk %}">Add Comment</a>
+{% else %}
+    <p>Log in to your account to add comments. <a href="{% url 'login' %}">Login</a></p>
+{% endif %}
 <hr>
 <br/><br/>
 

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Posts Rating</title>
+</head>
+<body>
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Post Ratings</h1>
+
+    {% for post in posts %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.body }}</p>
+            <p><strong>Total Likes:</strong> {{ post.total_likes }}</p>
+            <p><strong>Total Dislikes:</strong> {{ post.total_dislikes }}</p>
+            <p><strong>Total Rating:</strong> {{ post.total_rating }}</p>
+            <p><strong>Place:</strong> {{ forloop.counter }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+</body>
+</html>

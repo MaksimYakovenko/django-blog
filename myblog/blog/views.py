@@ -5,10 +5,19 @@ from .models import Post, Category, Comment
 from .forms import PostForm, EditForm, CommentForm
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
+from django.db.models import Count
 
 
 # def home(request):
 #     return render(request, 'home.html', {})
+
+def RatingView(request):
+    posts = Post.objects.annotate(
+        total_likes_count=Count('likes'),
+        total_dislikes_count=Count('dislikes')
+    ).order_by('-total_likes_count', 'total_dislikes_count')
+
+    return render(request, 'rating-list.html', {'posts': posts})
 
 
 def LikeDislikeView(request, pk):
