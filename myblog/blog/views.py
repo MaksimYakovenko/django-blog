@@ -1,23 +1,39 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import (ListView, DetailView, CreateView,
-                                  UpdateView, DeleteView)
-from .models import Post, Category, Comment
+                                  UpdateView, DeleteView, TemplateView)
+from .models import Post, Category, Comment, Profile
 from .forms import PostForm, EditForm, CommentForm
 from django.urls import reverse_lazy, reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Count
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 
 
 # def home(request):
 #     return render(request, 'home.html', {})
 
-def RatingView(request):
-    posts = Post.objects.annotate(
-        total_likes_count=Count('likes'),
-        total_dislikes_count=Count('dislikes')
-    ).order_by('-total_likes_count', 'total_dislikes_count')
+def PaginatorView(request):
+    post_list = Post.objects.all()
+    p = Paginator(post_list, 9)
+    page = request.GET.get('page')
+    page_obj = p.get_page(page)
+    return render(request, "list.html", {"page_obj": page_obj})
 
-    return render(request, 'rating-list.html', {'posts': posts})
+
+# def RatingTop5View(request):
+#     popular_posts = Post.objects.annotate(
+#         total_likes_count=Count('likes')
+#     ).order_by('-total_likes_count')[:5]
+#     return render(request, 'rating-list.html', {'popular_posts': popular_posts})
+
+# def RatingView(request):
+#     posts = Post.objects.annotate(
+#         total_likes_count=Count('likes'),
+#         total_dislikes_count=Count('dislikes')
+#     ).order_by('-total_likes_count', 'total_dislikes_count')[:5]
+#     return render(request, 'home.html', {'posts': posts})
+
 
 
 def LikeDislikeView(request, pk):
@@ -46,7 +62,7 @@ def LikeDislikeView(request, pk):
 class HomeView(ListView):
     model = Post
     template_name = 'home.html'
-    ordering = ['-post_date']
+    ordering = ['-post_date', '-id']
 
     def get_context_data(self, *args, **kwargs):
         cat_menu = Category.objects.all()
@@ -126,10 +142,29 @@ class UpdatePostView(UpdateView):
     model = Post
     form_class = EditForm
     template_name = 'update_post.html'
+    success_url = '/'
     # fields = ['title', 'title_tag', 'body']
 
+    def form_valid(self, form):
+        return super().form_valid(form)
 
 class DeletePostView(DeleteView):
     model = Post
     template_name = 'delete_post.html'
     success_url = reverse_lazy('home')
+
+
+class AboutUsView(TemplateView):
+    template_name = 'about.html'
+
+
+class ContactUsView(TemplateView):
+    template_name = 'contact.html'
+
+
+class PrivacyPolicyView(TemplateView):
+    template_name = 'privacy.html'
+
+
+class OurTeamView(TemplateView):
+    template_name = 'our_team.html'

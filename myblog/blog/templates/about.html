@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Blog Post</title>
+    <title>About us</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -17,27 +17,31 @@
 <link rel="stylesheet" href="{% static 'blog/css/main.css' %}">
 <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
 <link rel="shortcut icon" type="image/x-icon" href="{% static 'blog/images/favicon-logo1.png' %}">
-{% if user.is_authenticated %}
-    {% if user.id == post.author.id %}
-        <h1>Update Blog Post</h1>
-        <br/><br/>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.media }}
-            {{ form.as_p }}
-            <button class="btn btn-secondary">Update</button>
-        </form>
-<br/><br/>
-<script>
-    var name = '{{ user.id }}';
-    document.getElementById('yakovenko').value=name;
-</script>
-    {% else %}
-        <h3>You're not allowed here!</h3>
-    {% endif %}
-{% else %}
-    <h3>You're not allowed here!</h3>
-{% endif %}
+
+
+<section class="about-us">
+    <div class="row">
+        <div class="about-col">
+            <h1>We are the world's largest blog</h1>
+            <p>
+                At EchoVerse, we believe in the power of community building. Our team of writers, enthusiasts, and
+                experts are
+                committed to delivering high-quality, engaging, and informative articles that cater to professionals.
+                Whether you're looking to mention the main goals or interests your audience may have learn something
+                new,
+                you'll find it all here. From in-depth guides and tutorials to thought-provoking opinion pieces and
+                captivating stories, our diverse range of content aims to mention the impact or value your content
+                brings entertain.
+            </p>
+            <a href="{% url 'our_team' %}" class="hero-btn red-btn">EXPLORE NOW</a>
+        </div>
+        <div class="about-col">
+            <img src="{% static 'blog/images/about.jpg' %}">
+        </div>
+    </div>
+</section>
+
+{% load static %}
 <footer>
     <br/>
     <div class="row container" style="margin-left: 155px">
@@ -97,7 +101,7 @@
 
                 <div>
                     <span><i class="fas fa-paper-plane"></i></span>
-                    <span>info@echoverse.com</span>
+                    <span>info@edcademy.com</span>
                 </div>
             </div>
         </div>

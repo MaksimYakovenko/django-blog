@@ -1,29 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .login-container {
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-title {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-control {
+            border-radius: 25px;
+        }
+
+        .btn-login {
+            border-radius: 25px;
+            background-color: #f44336;
+            border-color: #f44336;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: #d32f2f;
+        }
+
+        .mt-3.text-center a {
+            color: #f44336;
+            text-decoration: none;
+        }
+
+        .mt-3.text-center a:hover {
+            color: #d32f2f;
+        }
+
+        .logo1 {
+            width: 100%;
+            height: auto;
+            transform: scale(0.6);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        main {
+            margin-left: 250px;
+        }
+
+        .form-control:hover {
+            border-color: #f44336;
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 <body>
-{% extends 'base.html' %}
-
-{% block content %}
-<h1>Login</h1>
-<br/><br/>
-<form method="POST">
-    {% csrf_token %}
-    <div class="form-group">
-        <input type="text" class="form-control" name="username" placeholder="Username">
+<main>
+    {% load static %}
+    <link rel="shortcut icon" type="image/png" href="{% static 'blog/images/favicon-logo1.ico' %}"/>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 my-auto">
+                <div class="login-container">
+                    <img src="{% static 'blog/images/full-logo.png' %}" style="transform: scale(1.6)" alt="Logo" class="logo">
+                    <h1 class="login-title"><i class="fas fa-user-circle"></i> Login</h1>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            <input type="text" class="form-control" name="username" placeholder="Username">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            </div>
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-login">Login</button>
+                    </form>
+                    <div class="mt-3 text-center">
+                        <small>Not Registered? Sign up <a href="{% url 'register' %}">Here</a></small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 my-auto">
+                <img src="{% static 'blog/images/background.png' %}" class="logo1" style="margin-left: -140px">
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <input type="password" class="form-control" name="password" placeholder="Password">
-
-    </div>
-    <br/>
-    <button class="btn btn-secondary">Login</button>
-</form>
-<br/><br/>
-Not Registered? Sign up <a href="{% url 'register' %}">Here</a>
-{% endblock %}
+</main>
+<!-- Add Bootstrap JS (optional) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

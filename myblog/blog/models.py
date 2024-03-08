@@ -8,6 +8,7 @@ from ckeditor.fields import RichTextField
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
+
     def __str__(self):
         return self.name
 
@@ -44,6 +45,9 @@ class Post(models.Model):
     snippet = models.CharField(max_length=255)
     likes = models.ManyToManyField(User, related_name='blog_posts')
     dislikes = models.ManyToManyField(User, related_name='dislike_post')
+    post_category = models.ForeignKey(Category, related_name='posts',
+                                      on_delete=models.DO_NOTHING, null=True,
+                                      blank=True)
 
     def total_likes(self):
         return self.likes.count()
@@ -62,10 +66,11 @@ class Post(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, related_name='comments',
-    on_delete=models.CASCADE)
+                             on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     body = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='profile_pics/', blank=True)
 
     def __str__(self):
         return '%s - %s' % (self.post.title, self.name)

@@ -2,176 +2,499 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVerse</title>
+    <link rel="shortcut icon" type="image/x-icon" href="static/blog/images/favicon-logo1.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet">
+    <script src="https://kit.fontawesome.com/130fa5f424.js" crossorigin="anonymous"></script>
+    <style>
+        img {
+            max-width: 200%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
 {% extends 'base.html' %}
 {% load static %}
 {% load set_var %}
-{% block title %}{{ post.title_tag }}{% endblock %}
-
 {% block content %}
-<h1>{{ post.title }}</h1>
-<small>By:
-    {{ post.author.first_name }}
-    {{ post.author.last_name }} -
-    {{ post.post_date }}
-    {% if user.is_authenticated %}
-    {% if user.id == post.author.id %}
-    - <a href="{% url 'update_post' post.pk %}">(Edit)</a>
-    <a href="{% url 'delete_post' post.pk %}">(Delete)</a>
-    {% endif %}
-    {% endif %}
-</small> <br/>
-<hr>
+<link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+<div class="blog-author" style="margin-right: 60px">
+    <div class="blog-author-img">
+        {% if post.author.profile.profile_pic %}
+        <img src="{{ post.author.profile.profile_pic.url }}" width="200" height="200">
+        {% else %}
+        <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img"
+             width="200"
+             height="200">
+        {% endif %}
+    </div>
+</div>
+
+<div class="blog-author-text" style="margin-top: 10px;">
+    <p>{{ post.author.first_name }} {{ post.author.last_name }}</p>
+    <span>{{ post.post_date }}</span>
+</div>
+<br/><br/>
+<div class="article-title">
+    <h1>{{ post.title }}</h1>
+</div>
+<div class="article-snippet">
+    {{ post.snippet }}
+</div>
+<style>
+    .blog-author {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .blog-author-img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 10px;
+    }
+
+    .blog-author-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        text-align: center;
+    }
+
+    .blog-author-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .blog-author-text p {
+        text-size-adjust: 100%;
+        box-sizing: border-box;
+        display: block;
+        text-align: center;
+        margin-right: 55px;
+        color: rgb(136, 136, 136);
+        font-size: 18px;
+        font-family: Poppins, sans-serif;
+        font-weight: 400;
+        line-height: 27px
+    }
+
+    .blog-author-text span {
+        /*color: #797979;*/
+        /*font-size: 0.8rem;*/
+        /*font-weight: 500;*/
+        margin-top: -10px;
+        color: rgba(0, 0, 0, 0.5);
+        font-family: Poppins, sans-serif;
+        text-transform: uppercase;
+        font-weight: 400;
+        font-size: 15.75px;
+        text-size-adjust: 100%;
+        display: block;
+        line-height: 23.625px;
+        box-sizing: border-box;
+        text-align: center;
+        margin-right: 70px;
+    }
+
+    .article-title {
+        box-sizing: border-box;
+        color: rgb(0, 0, 0);
+        display: block;
+        font-family: Poppins, sans-serif;
+        font-size: 34px;
+        font-weight: 700;
+        line-height: 40.8px;
+        text-size-adjust: 100%;
+        text-align: center;
+        margin-right: 40px;
+    }
+
+    .article-snippet {
+        box-sizing: border-box;
+        color: rgb(136, 136, 136);
+        display: block;
+        font-family: Poppins, sans-serif;
+        font-size: 20px;
+        font-weight: 300;
+        line-height: 30px;
+        text-align: center;
+        margin-bottom: 24px;
+        margin-right: 40px;
+    }
+
+    .article-body {
+        box-sizing: border-box;
+        color: rgb(136, 136, 136);
+        font-family: Poppins, sans-serif;
+        display: block;
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 27px;
+        margin-block-end: 16px;
+        margin-bottom: 16px;
+        text-size-adjust: 100%;
+    }
+</style>
 <br/>
 {% if post.header_image %}
-<img src="{{ post.header_image.url }}">
+<div style="text-align: center">
+    <style>
+        .photo {
+            width: 900px;
+            height: 500px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <img class="photo" src="{{ post.header_image.url }}">
+</div>
 {% endif %}
 <br/><br/>
-{{ post.body|safe }}
-
-
-<hr>
+<div class="article-body">
+    {{ post.body|safe }}
+</div>
 <br/>
 
 <form action="{% url 'post-feedback' post.pk %}" method="POST" style="display: inline;">
     {% csrf_token %}
     {% if user.is_authenticated %}
-        {% if user.id != post.author.id %}
-            {% if feedback == 'like' %}
-                {% set like = "btn-success disabled" %}
-                {% set dislike = "btn-like" %}
-            {% elif feedback == 'dislike' %}
-                {% set like = "btn-like" %}
-                {% set dislike = "btn-danger disabled" %}
-            {% else %}
-                {% set like = "btn-like" %}
-                {% set dislike = "btn-like" %}
-            {% endif %}
-            <button type="submit" name="feedback" value="like" class="btn {{like}}">
-                Like
-            </button>
-            - {{ post.total_likes }} Likes
-            <button type="submit" name="feedback" value="dislike" class="btn {{dislike}}">
-                Dislike
-            </button>
-            - {{ post.total_dislikes }} Dislikes
-        {% else %}
-            {{ post.total_likes }} Likes  {{ post.total_dislikes }} Dislikes
-        {% endif %}
+    {% if user.id != post.author.id %}
+    {% if feedback == 'like' %}
+    {% set like = "fa-solid fa-thumbs-up" %}
+    {% set dislike = "fa-regular fa-thumbs-down" %}
+    {% elif feedback == 'dislike' %}
+    {% set like = "fa-regular fa-thumbs-up" %}
+    {% set dislike = "fa-solid fa-thumbs-down" %}
     {% else %}
-        <a href="{% url 'login' %}">Login to like/dislike</a>
-        <br>
-        {{ post.total_likes }} Likes  {{ post.total_dislikes }} Dislikes
+    {% set like = "fa-regular fa-thumbs-up" %}
+    {% set dislike = "fa-regular fa-thumbs-down" %}
     {% endif %}
-
+    <button value="like" name="feedback" style="border: none; background: none; padding: 0; cursor: pointer">
+        <span>
+            <i class="{{ like }}"
+               style="transform: scale(1.7); margin-right: 10px; color: rgb(136, 136, 136); cursor: pointer"></i>
+            <span style="font-size: 18px; font-family: Poppins, sans-serif; color: rgb(136, 136, 136); cursor: pointer">{{ post.total_likes }}</span>
+        </span>
+    </button>
+    <button value="dislike" name="feedback" style="border: none; background: none; padding: 0; cursor: pointer">
+        <span style="margin-left: 30px">
+            <i class="{{ dislike }}"
+               style="transform: scale(1.7); margin-right: 10px; color: rgb(136, 136, 136); cursor: pointer"></i>
+            <span style="font-size: 18px; font-family: Poppins, sans-serif; color: rgb(136, 136, 136); cursor: pointer">{{ post.total_dislikes }}</span>
+        </span>
+    </button>
+    {% else %}
+    <span>
+    <i class="fa-regular fa-thumbs-up"
+       style="transform: scale(1.7); margin-right: 10px; color: rgb(136, 136, 136); cursor: pointer;"
+       onclick="handleLikeClick()"></i>
+    <span style="font-size: 18px; font-family: Poppins, sans-serif; color: rgb(136, 136, 136);">{{ post.total_likes }}</span>
+</span>
+    <span style="margin-left: 30px;">
+    <i class="fa-regular fa-thumbs-down"
+       style="transform: scale(1.7); margin-right: 10px; color: rgb(136, 136, 136); cursor: pointer;"
+       onclick="handleDislikeClick()"></i>
+    <span style="font-size: 18px; font-family: Poppins, sans-serif; color: rgb(136, 136, 136);">{{ post.total_dislikes }}</span>
+</span>
+    {% endif %}
+    {% else %}
+    <span>
+        <a href="{% url 'login' %}" style="text-decoration: none; outline: none; color: inherit"><i
+                class="fa-regular fa-thumbs-up"
+                style="transform: scale(1.7); margin-right: 10px; color: rgb(136, 136, 136)"></i></a> <span
+            style="font-size: 18px; font-family: Poppins, sans-serif; color: rgb(136, 136, 136)">{{ post.total_likes }}</span>
+    </span>
+    <span style="margin-left: 30px;">
+        <a href="{% url 'login' %}" style="text-decoration: none; outline: none; color: inherit"><i
+                class="fa-regular fa-thumbs-down"
+                style="transform: scale(1.7); margin-right: 10px; color: rgb(136, 136, 136)"></i></a> <span
+            style="font-size: 18px; font-family: Poppins, sans-serif; color: rgb(136, 136, 136);">{{ post.total_dislikes }}</span>
+    </span>
+    {% endif %}
 </form>
 
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    function handleLikeClick() {
+        alert("Ставити вподобайку на свій пост заборонено!");
+    }
 
-<!--<script>-->
-<!--    $(document).ready(function () {-->
-<!--        $('button.likeButton, button.dislikeButton').click(function (e) {-->
-<!--            e.preventDefault();-->
-<!--            var button = $(this);-->
-<!--            var postId = button.val();-->
-<!--            var oppositeButton = button.hasClass('likeButton') ? '.dislikeButton' : '.likeButton';-->
-
-<!--            // Check if the opposite button is active, and deactivate it-->
-<!--            if ($(oppositeButton + '[data-id="' + postId + '"]').hasClass('btn-like') ||-->
-<!--                $(oppositeButton + '[data-id="' + postId + '"]').hasClass('btn-danger')) {-->
-<!--                $(oppositeButton + '[data-id="' + postId + '"]').removeClass('btn-like btn-danger');-->
-<!--                var oppositeCountElement = $('#' + (button.hasClass('likeButton') ? 'dislike' : 'like') + 'Count_' + postId);-->
-<!--                var oppositeCount = parseInt(oppositeCountElement.text());-->
-<!--                oppositeCountElement.text(oppositeCount - 1);-->
-<!--            }-->
-
-<!--            // Toggle the state of the current button-->
-<!--            button.toggleClass('btn-like btn-danger');-->
-<!--            var action = button.hasClass('likeButton') ? 'like' : 'dislike';-->
-<!--            var countElement = $('#' + action + 'Count_' + postId);-->
-<!--            var count = parseInt(countElement.text());-->
-
-<!--            // Update the count based on the button state-->
-<!--            if (button.hasClass('btn-like')) {-->
-<!--                countElement.text(count - 1);-->
-<!--            } else {-->
-<!--                countElement.text(count + 1);-->
-<!--            }-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
+    function handleDislikeClick() {
+        alert("Ставити дизлайк на свій пост заборонено!");
+    }
+</script>
 
 <hr>
-<div class="card mb-3">
+<br/>
+<div class="card mb-3" style="border: none">
     <div class="row no-gutters">
         <div class="col-md-2">
             {% if post.author.profile.profile_pic %}
-            <img src="{{ post.author.profile.profile_pic.url }}" class="card-img" width="200" height="200">
+            <img src="{{ post.author.profile.profile_pic.url }}" class="card-img"
+                 style="border-radius: 50%; width: 150px; height: 150px">
             {% else %}
-            <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img" width="200" height="200">
+            <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img"
+                 style="border-radius: 50%; width: 150px;  height: 150px">
             {% endif %}
         </div>
         <div class="col-md-10">
             <div class="card-body">
-                <h5 class="card-title">{{ post.author.first_name }}
+                <h3 class="card-title">{{ post.author.first_name }}
                     {{ post.author.last_name }}
-                </h5>
+                </h3>
+                <p class="card-text">{{ post.author.profile.bio }}</p>
                 <p class="small text-muted">
                     {% if post.author.profile %}
-                    <a href="{% url 'show_profile_page' post.author.profile.id %}">Profile Page</a>
-                    {% if post.author.profile.website_url %}
-                    | <a href="{{ post.author.profile.website_url }}">Website</a>
-                    {% endif %}
+                    <a href="{% url 'show_profile_page' post.author.profile.id %}" class="icon-square"><i
+                            class="fa-solid fa-e" style="transform: scale(1.5)"></i></i></a>
 
                     {% if post.author.profile.instagram_url %}
-                    | <a href="{{ post.author.profile.instagram_url }}">Instagram</a>
+                    <a href="{{ post.author.profile.instagram_url }}" class="icon-square"><i
+                            class="fa-brands fa-instagram" style="transform: scale(1.5)"></i></a>
                     {% endif %}
 
                     {% if post.author.profile.twitter_url %}
-                    | <a href="{{ post.author.profile.twitter_url }}">Twitter</a>
+                    <a href="{{ post.author.profile.twitter_url }}" class="icon-square"><i
+                            class="fa-brands fa-x-twitter" style="transform: scale(1.5)"></i></a>
                     {% endif %}
 
                     {% if post.author.profile.facebook_url %}
-                    | <a href="{{ post.author.profile.facebook_url }}">Facebook</a>
+                    <a href="{{ post.author.profile.facebook_url }}" class="icon-square"><i
+                            class="fa-brands fa-facebook" style="transform: scale(1.5)"></i></a>
                     {% endif %}
                     {% endif %}
                 </p>
-                <p class="card-text">{{ post.author.profile.bio }}</p>
             </div>
         </div>
     </div>
 </div>
-<br/><br/>
-<h2>Comments</h2>
-<br>
-{% if not post.comments.all %}
-    No Comments Yet.
-{% else %}
-    <br/><br/>
-    {% for comment in post.comments.all %}
-        <strong>
-            {{ comment.name }} -
-            {{ comment.date_added }}
-        </strong>
-        <br/>
-        {{ comment.body }}
-        <br/><br/>
-    {% endfor %}
-{% endif %}
+<style>
+    .card-title {
+        box-sizing: border-box;
+        color: rgb(33, 38, 49);
+        display: block;
+        font-family: "Nunito Sans", sans-serif;
+        font-size: 23px;
+        font-weight: 700;
+        line-height: 25.3px;
+        margin-block-end: 15px;
+    }
 
-{% if user.is_authenticated %}
-    <a href="{% url 'add_comment' post.pk %}">Add Comment</a>
-{% else %}
-    <p>Log in to your account to add comments. <a href="{% url 'login' %}">Login</a></p>
-{% endif %}
+    .card-text {
+        box-sizing: border-box;
+        color: rgb(61, 69, 92);
+        display: block;
+        font-family: "Nunito Sans", sans-serif;
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 22.8571px;
+        margin-block-end: 20px;
+        text-size-adjust: 100%;
+    }
+
+    .icon-square {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        border-radius: 5px;
+        margin-right: 5px;
+        background-color: rgb(167, 179, 198);
+        color: white;
+        transition: all ease 0.3s;
+    }
+
+    .icon-square:hover {
+        background-color: rgb(133, 143, 158);
+        transition: all ease 0.3s;
+    }
+
+    .small.text-muted a {
+        color: white;
+    }
+</style>
 <hr>
 <br/><br/>
+<h2>Comments to the post</h2>
+<br/>
+<a href="{% url 'add_comment' post.pk %}">Add Comment</a>
+
+{% if not post.comments.all %}
+No Comments Yet.
+{% else %}
+<br/><br/>
+{% for comment in post.comments.all %}
+<br/>
+<div style="display: flex">
+    <div class="comment-form" style="flex: 1; margin-left: 90px">
+        <strong>
+            <div class="name">
+                {{ comment.name }}
+            </div>
+            <div class="date">
+                {{ comment.date_added }}
+            </div>
+        </strong>
+        <br/>
+        <div class="comment-body" style="width: 680px">
+            {{ comment.body }}
+        </div>
+    </div>
+    <div class="commenter-pic" style="flex: 1; margin-top: -15px; margin-left: -1305px">
+        {% if comment.image %}
+        <img src="{{ comment.image.url }}" alt="Commenter Avatar" class="avatar">
+        {% else %}
+        <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img"
+             width="200"
+             height="200">
+        {% endif %}
+    </div>
+</div>
+<br/>
+{% endfor %}
+{% endif %}
+
+<br/><br/><br/><br/><br/>
+{% if user.is_authenticated %}
+{% else %}
+<p>Log in to your account to add comments. <a href="{% url 'login' %}">Login</a></p>
+{% endif %}
 
 <br/><br/>
+
+<style>
+    .name {
+        box-sizing: border-box;
+        color: rgb(33, 38, 49);
+        display: block;
+        font-family: "Nunito Sans", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 17.6px;
+        margin-block-end: 15px;
+        margin-bottom: 15px;
+        text-size-adjust: 100%;
+        text-transform: capitalize;
+    }
+
+    .date {
+        box-sizing: border-box;
+        color: rgb(167, 179, 198);
+        font-family: Nunito, sans-serif;
+        font-size: 13px;
+        font-weight: 300;
+        line-height: 18.5714px;
+        margin-right: 15px;
+        text-size-adjust: 100%;
+    }
+
+    .commenter-pic img {
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        transform: scale(0.6);
+        margin-top: -21px;
+        float: left;
+
+    }
+
+    .comment-body {
+        box-sizing: border-box;
+        color: rgb(61, 69, 92);
+        display: block;
+        font-family: Nunito, sans-serif;
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 22.8571px;
+        margin-block-end: 20px;
+        text-size-adjust: 100%;
+    }
+</style>
+
+<footer style="margin-top: -60px">
+    <br/>
+    <div class="row container" style="margin-left: 155px">
+        <div>
+            <img src="{% static 'blog/images/logo1.png' %}" style="transform: scale(1.4)">
+            <div class="text" style="color: silver">
+                <p>EchoVerse</p>
+                <p>for the best</p>
+            </div>
+            <ul class="footer-social-links">
+                <li class="flex">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                </li>
+
+                <li class="flex">
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                </li>
+
+                <li class="flex">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </li>
+
+                <li class="flex">
+                    <a href="#"><i class="fab fa-google"></i></a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="lg-text">Information</h3>
+            <div class="footer-links">
+                <a href="{% url 'about_us' %}">About Us</a>
+                <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+                <a href="{% url 'contact_us' %}">Contact Us</a>
+            </div>
+        </div>
+        <div>
+            <h3 class="lg-text">Our partners</h3>
+            <div class="footer-links">
+                <a href="https://medium.com/">Medium</a>
+                <a href="https://www.blogger.com/">Blogger</a>
+                <a href="https://twitter.com/">Twitter</a>
+                <a href="https://copyblogger.com/">Copyblogger</a>
+            </div>
+        </div>
+        <div>
+            <h3 class="lg-text">Have a question?</h3>
+            <div class="footer-contact-info">
+                <div>
+                    <span><i class="fas fa-map-marker-alt"></i></span>
+                    <span>701 Lake Parker, Street, MerryLand, USA</span>
+                </div>
+
+                <div>
+                    <span><i class="fas fa-phone"></i></span>
+                    <span>1240-322-3422</span>
+                </div>
+
+                <div>
+                    <span><i class="fas fa-paper-plane"></i></span>
+                    <span>info@echoverse.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="footer-text">Copyright &copy; 2024. Blog. All Rights Reserved.</p>
+</footer>
+
 {% endblock %}
 </body>
 </html>

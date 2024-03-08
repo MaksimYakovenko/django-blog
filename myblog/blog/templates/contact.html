@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Contact us</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Blog Post</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -16,28 +17,64 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'blog/css/main.css' %}">
 <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
-<link rel="shortcut icon" type="image/x-icon" href="{% static 'blog/images/favicon-logo1.png' %}">
-{% if user.is_authenticated %}
-    {% if user.id == post.author.id %}
-        <h1>Update Blog Post</h1>
-        <br/><br/>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.media }}
-            {{ form.as_p }}
-            <button class="btn btn-secondary">Update</button>
-        </form>
-<br/><br/>
-<script>
-    var name = '{{ user.id }}';
-    document.getElementById('yakovenko').value=name;
-</script>
-    {% else %}
-        <h3>You're not allowed here!</h3>
-    {% endif %}
-{% else %}
-    <h3>You're not allowed here!</h3>
-{% endif %}
+<link rel="shortcut icon" type="image/x-icon" href="{% static 'blog/images/favicon-logo.png' %}">
+
+<section class="location">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17371.46269553492!2d-81.95106296644656!3d28.05506244963614!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88dd3fe8c9603489%3A0x8d3ef4e676dfc67!2sLakeland%20Furniture%20Outlet!5e0!3m2!1suk!2sua!4v1707568019758!5m2!1suk!2sua"
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+</section>
+
+<section class="contact-us">
+    <div class="row">
+        <div class="contact-col">
+            <div>
+                <i class="fa fa-home"></i>
+                <span>
+                    <h5>XYZ Road, ABC Building</h5>
+                    <p>701 Lake Parker, Street, MerryLand, USA</p>
+                </span>
+            </div>
+            <div>
+                <i class="fa fa-phone"></i>
+                <span>
+                    <h5>1240-322-3422</h5>
+                    <p>Monday to Saturday, 10AM to 6PM</p>
+                </span>
+            </div>
+            <div>
+                <i class="fas fa-paper-plane"></i>
+                <span>
+                    <h5>info@echoverse.com</h5>
+                    <p>Email us your query</p>
+                </span>
+            </div>
+        </div>
+        <div class="contact-col">
+    <form id="contact-form" action="https://api.web3forms.com/submit" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="access_key" value="9f5a3fe2-a3dd-48f2-b7d4-197346aee98a">
+        <input type="text" name="name" id="name" placeholder="Enter your name" required>
+        <input type="email" name="email" id="email" placeholder="Enter your email address" required>
+        <input type="text" name="subject" id="subject" placeholder="Enter your subject" required>
+        <textarea rows="8" name="message" id="message" placeholder="Message" required></textarea>
+        <div class="h-captcha" data-captcha="true"></div>
+        <button type="submit" id="submit-btn" class="hero-btn red-btn">Send Message</button>
+    </form>
+    <script src="https://web3forms.com/client/script.js" async defer></script>
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            var captchaResponse = hcaptcha.getResponse();
+            if (!captchaResponse) {
+                event.preventDefault();
+            }
+        });
+    </script>
+</div>
+
+    </div>
+</section>
+
 <footer>
     <br/>
     <div class="row container" style="margin-left: 155px">

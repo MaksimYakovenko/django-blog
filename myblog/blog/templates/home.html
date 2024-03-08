@@ -2,31 +2,199 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Main Page</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echoverse</title>
+    <link rel="stylesheet" href="static/blog/js/main.js">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="static/blog/images/favicon-logo1.ico">
+    <style>
+        .fa-bars {
+            transition: transform 0.3s ease;
+        }
+
+        .fa-bars:hover {
+            transform: scale(1.4);
+        }
+
+    </style>
 </head>
 <body>
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<h1>Post</h1>
-<ul>
-    {% for post in object_list %}
-    <li><a href="{% url 'article-detail' post.pk %}">{{ post.title }}</a> - <a href="{% url 'category' post.category|slugify %}">{{ post.category }}</a> - {{ post.author.first_name }}
-        {{ post.author.last_name }} - {{ post.post_date }} <small>
-            {% if user.is_authenticated %}
-                {% if user.id == post.author.id %}
-                    <a href="{% url 'update_post' post.pk %}">(Edit)</a>
-                    <a href="{% url 'delete_post' post.pk %}">(Delete)</a>
-                {% endif %}
-            {% endif %}
-        </small> <br/>
-        {{ post.snippet }}
-    </li>
-    {% endfor %}
-</ul>
+<link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+<main>
+    <section id="blog" style="width: calc(100% + 70px)">
+        <div class="blog-heading">
+            <strong>Recent Blog</strong>
+            <h3>Our Blog</h3>
+        </div>
+        <div class="container">
+            <div class="row">
+                {% for post in object_list %}
+                <div class="col-lg-4 mb-4">
+                    <div class="blog-box">
+                        <div class="blog-box-img">
+                            {% if post.header_image %}
+                            <img src="{{ post.header_image.url }}">
+                            {% else %}
+                            <img src="{% static 'blog/images/photo_by_default.jpg'%}">
+                            {% endif %}
+                            <a href="{% url 'article-detail' post.pk %}" class="blog-img-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square" style="margin-top: 16px"></i>
+                            </a>
+                        </div>
+                        <div class="blog-box-text">
+                            <div style="display: flex; align-items: center">
+                                <strong class="category-name"><a href="{% url 'category' post.category|slugify %}"
+                                                                 style="text-decoration: none">{{ post.category}}</a></strong>
+                                {% if user.is_authenticated %}
+                                {% if user.id == post.author.id %}
+                                <div class="dropdown" style="margin-left: auto">
+                                    <button class="btn btn-link dropdown-togggle" type="button"
+                                            style="color: black; text-decoration: none" id="dropdownMenuButton"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-bars"></i>
+                                    </button>
+                                    <div class="dropdown-menu" style="margin-left: -100px; width: 30px;"
+                                         aria-labelledby="dropdownMenuButton">
+                                        <div class="dropdown-item">
+                                            <i class="fa-regular fa-pen-to-square"></i> <a
+                                                href="{% url 'update_post' post.pk %}"
+                                                style="text-decoration: none; padding: 5px">Edit</a>
+                                        </div>
+                                        <div class="dropdown-item">
+                                            <i class="fa-solid fa-trash-can" style="color: red"></i> <a
+                                                href="{% url 'delete_post' post.pk %}"
+                                                style="color: red; text-decoration: none; padding: 5px">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endif %}
+                            </div>
+                            <style>
+                                .dropdown-togggle::after {
+                                    display: none;
+                                }
+                            </style>
+                            <p class="post-title">{{ post.title }}</p>
+                            <p>
+                                {% if post.snippet|length > 200 %}
+                                {{ post.snippet|slice:":200" }}...
+                                {% else %}
+                                {{ post.snippet }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="blog-author" style="margin-right: 65px">
+                            <div class="blog-author-img">
+                                {% if post.author.profile.profile_pic %}
+                                <img src="{{ post.author.profile.profile_pic.url }}" width="200" height="200">
+                                {% else %}
+                                <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img"
+                                     width="200"
+                                     height="200">
+                                {% endif %}
+                            </div>
+                            <div class="blog-author-text">
+                                <strong>{{ post.author.first_name }} {{ post.author.last_name }}</strong>
+                                <span>{{ post.post_date }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <br>
 
-<!--{% for item in cat_menu-->
+    </section>
+</main>
 
+<div class="category">
+    <h4>Post Categories</h4>
+    <div>
+        {% for item in cat_menu %}
+        <a class="dropdown-item" href="{% url 'category' item|slugify %}">
+            {{ item }} ({{ item.posts_count }})
+        </a><br/>
+        {% endfor %}
+    </div>
+</div>
+
+{% load static %}
+<footer>
+    <br/>
+    <div class="row container" style="margin-left: 155px">
+        <div>
+            <img src="{% static 'blog/images/logo1.png' %}" style="transform: scale(1.4)">
+            <div class="text" style="color: silver">
+                <p>EchoVerse</p>
+                <p>for the best</p>
+            </div>
+            <ul class="footer-social-links">
+                <li class="flex">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                </li>
+
+                <li class="flex">
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                </li>
+
+                <li class="flex">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </li>
+
+                <li class="flex">
+                    <a href="#"><i class="fab fa-google"></i></a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="lg-text">Information</h3>
+            <div class="footer-links">
+                <a href="{% url 'about_us' %}">About Us</a>
+                <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+                <a href="{% url 'contact_us' %}">Contact Us</a>
+            </div>
+        </div>
+        <div>
+            <h3 class="lg-text">Our partners</h3>
+            <div class="footer-links">
+                <a href="https://medium.com/">Medium</a>
+                <a href="https://www.blogger.com/">Blogger</a>
+                <a href="https://twitter.com/">Twitter</a>
+                <a href="https://copyblogger.com/">Copyblogger</a>
+            </div>
+        </div>
+        <div>
+            <h3 class="lg-text">Have a question?</h3>
+            <div class="footer-contact-info">
+                <div>
+                    <span><i class="fas fa-map-marker-alt"></i></span>
+                    <span>701 Lake Parker, Street, MerryLand, USA</span>
+                </div>
+
+                <div>
+                    <span><i class="fas fa-phone"></i></span>
+                    <span>1240-322-3422</span>
+                </div>
+
+                <div>
+                    <span><i class="fas fa-paper-plane"></i></span>
+                    <span>info@echoverse.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="footer-text">Copyright &copy; 2024. Blog. All Rights Reserved.</p>
+</footer>
 
 {% endblock %}
 </body>
