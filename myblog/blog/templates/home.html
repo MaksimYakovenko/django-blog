@@ -29,7 +29,7 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
 <main>
-    <section id="blog" style="width: calc(100% + 70px)">
+    <section id="blog" >
         <div class="blog-heading">
             <strong>Recent Blog</strong>
             <h3>Our Blog</h3>
@@ -113,7 +113,19 @@
             </div>
         </div>
         <br>
-
+        <nav aria-label="Page navigation example">
+            <ul class="list-style-none flex">
+                {% for num in page_obj.paginator.page_range %}
+                <li {% if num in page_obj.number %} aria-current="page" {% endif %}>
+                    <a style="text-decoration: none"
+                            class="relative block rounded bg-transparent px-3 py-1.5 text-sm text-surface transition duration-300 hover:bg-neutral-100 focus:bg-neutral-100 focus:text-primary-700 focus:outline-none active:bg-neutral-100 active:text-primary-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 dark:focus:text-primary-500 dark:active:bg-neutral-700 dark:active:text-primary-500"
+                            href="?page={{ num }}"
+                    >{{ num }}</a
+                    >
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
     </section>
 </main>
 
@@ -131,15 +143,11 @@
 
 <style>
 
-    .category:hover {
-        transform: scale(1.1);
-        transition: all ease 0.3s;
-    }
+
     .category {
         flex-basis: 32%;
         width: 360px;
         margin-bottom: 30px;
-        transition: all ease 0.3s;
     }
 
     .category h3 {
@@ -181,20 +189,73 @@
     }
 </style>
 <div class="rated_posts">
-    <h3 class="title">Most Rated</h3>
+    <h3 class="title">Most Rated Posts</h3>
     {% for post in top_rated_posts %}
-        <div class="post_item" style="margin-top: 10px">
-            {% if post.header_image %}
-                <img src="{{ post.header_image.url }}" class="post_image" alt="{{ post.title }}" style="width: 90px; height: 90px"><br/>
-            {% else %}
-                <img style="width: 90px; height: 90px; transition: opacity 0.3s ease" class="post_image" src="{% static 'blog/images/photo_by_default.jpg'%}"><br/>
-            {% endif %}
-            <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h3 class="title_post" style="margin-left: 13px">{{ post.title }}</h3></a><br/>
-        </div>
+    <div class="post_item" style="margin-top: 10px">
+        {% if post.header_image %}
+        <img src="{{ post.header_image.url }}" class="post_image" alt="{{ post.title }}"
+             style="width: 90px; height: 90px"><br/>
+        {% else %}
+        <img style="width: 90px; height: 90px; transition: opacity 0.3s ease" class="post_image"
+             src="{% static 'blog/images/photo_by_default.jpg'%}"><br/>
+        {% endif %}
+        <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h3 class="title_post"
+                                                                                       style="margin-left: 13px">{{ post.title }}</h3></a><br/>
+    </div>
     {% endfor %}
 </div>
 
+<div class="active-users">
+    <h3 class="active-users-title">Most Active Users</h3>
+    {% for user in active_users %}
+        <div class="user-item">
+            <span class="user">{{ user.first_name }} {{ user.last_name }}</span>
+            <span class="post-count">{{ user.post_count }} posts</span>
+        </div>
+    {% endfor %}
+</div>
 <style>
+    .user-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        margin-left: -15px;
+    }
+
+    .user {
+        color: #333;
+        font-family: Poppins, sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        position: relative;
+        left: 15px;
+    }
+
+    .post-count {
+        color: #888;
+        font-size: 15px;
+        position: relative;
+        right: 5px;
+    }
+
+    .active-users {
+        flex-basis: 32%;
+        width: 360px;
+        margin-bottom: 30px;
+    }
+
+    .active-users .active-users-title {
+        background: #f44336;
+        color: #fff;
+        padding: 10px 0;
+        font-size: 18px;
+        margin: 0;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
 
     .post_image:hover {
         opacity: 0.8;

@@ -10,6 +10,14 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 
 
+# def PaginatorView(request):
+#     post_list = Post.objects.all()
+#     paginator = Paginator(post_list, 3)
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+#     return
+
+
 # categories_with_post_count = Post.objects.values('category').annotate(
 #     post_count=Count('id'))
 # for category in categories_with_post_count:
@@ -35,7 +43,6 @@ def PaginatorView(request):
 #         total_dislikes_count=Count('dislikes')
 #     ).order_by('-total_likes_count', 'total_dislikes_count')[:5]
 #     return render(request, 'home.html', {'posts': posts})
-
 
 
 def LikeDislikeView(request, pk):
@@ -65,16 +72,22 @@ class HomeView(ListView):
     model = Post
     template_name = 'home.html'
     ordering = ['-post_date', '-id']
+    paginate_by = 9
 
     def get_context_data(self, *args, **kwargs):
-        cat_menu = Post.objects.values('category').annotate(post_count=Count('id'))
+        cat_menu = Post.objects.values('category').annotate(
+            post_count=Count('id'))
         context = super(HomeView, self).get_context_data(*args, **kwargs)
         context['cat_menu'] = cat_menu
 
         top_rated_posts = Post.objects.annotate(
-                total_likes_count=Count('likes'),
-                total_dislikes_count=Count('dislikes')
-            ).order_by('-total_likes_count', 'total_dislikes_count')[:4]
+            total_likes_count=Count('likes'),
+            total_dislikes_count=Count('dislikes')
+        ).order_by('-total_likes_count', 'total_dislikes_count')[:4]
+        active_users = User.objects.annotate(
+            post_count=Count('post')
+        ).order_by('-post_count')[:4]
+        context['active_users'] = active_users
         context['top_rated_posts'] = top_rated_posts
         return context
 
@@ -130,8 +143,6 @@ class AddCommentView(CreateView):
     form_class = CommentForm
     template_name = 'add_comment.html'
 
-
-
     # fields = '__all__'
     def form_valid(self, form):
         form.instance.post_id = self.kwargs['pk']
@@ -154,10 +165,12 @@ class UpdatePostView(UpdateView):
     form_class = EditForm
     template_name = 'update_post.html'
     success_url = '/'
+
     # fields = ['title', 'title_tag', 'body']
 
     def form_valid(self, form):
         return super().form_valid(form)
+
 
 class DeletePostView(DeleteView):
     model = Post
