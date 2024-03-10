@@ -118,16 +118,68 @@
 </main>
 
 <div class="category">
-    <h4>Post Categories</h4>
-    <div>
-        {% for item in cat_menu %}
-        <a class="dropdown-item" href="{% url 'category' item|slugify %}">
-            {{ item }} ({{ item.posts_count }})
-        </a><br/>
+    <h3>Post Categories</h3>
+    <div class="category-list">
+        {% for category in cat_menu %}
+        <div class="category-item">
+            <span class="category-category">{{ category.category }}</span>
+            <span class="category-count">{{ category.post_count }}</span>
+        </div>
         {% endfor %}
     </div>
 </div>
 
+<style>
+
+    .category:hover {
+        transform: scale(1.1);
+        transition: all ease 0.3s;
+    }
+    .category {
+        flex-basis: 32%;
+        width: 360px;
+        margin-bottom: 30px;
+        transition: all ease 0.3s;
+    }
+
+    .category h3 {
+        background: #f44336;
+        color: #fff;
+        padding: 10px 0;
+        font-size: 18px;
+        margin: 0;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .category-list {
+        padding: 20px;
+    }
+
+    .category-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        margin-left: -15px;
+    }
+
+    .category-category {
+        color: #333;
+        font-family: Poppins, sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+    }
+
+    .category-count {
+        color: #888;
+        font-size: 15px;
+        position: relative;
+        right: -13px;
+    }
+</style>
 {% load static %}
 <footer>
     <br/>

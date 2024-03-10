@@ -10,8 +10,10 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 
 
-# def home(request):
-#     return render(request, 'home.html', {})
+categories_with_post_count = Post.objects.values('category').annotate(
+    post_count=Count('id'))
+for category in categories_with_post_count:
+    print(f"Категория '{category['category']}': {category['post_count']} постов")
 
 def PaginatorView(request):
     post_list = Post.objects.all()
@@ -25,14 +27,14 @@ def PaginatorView(request):
 #     popular_posts = Post.objects.annotate(
 #         total_likes_count=Count('likes')
 #     ).order_by('-total_likes_count')[:5]
-#     return render(request, 'rating-list.html', {'popular_posts': popular_posts})
+#     return render(request, 'home.html', {'popular_posts': popular_posts})
 
-# def RatingView(request):
-#     posts = Post.objects.annotate(
-#         total_likes_count=Count('likes'),
-#         total_dislikes_count=Count('dislikes')
-#     ).order_by('-total_likes_count', 'total_dislikes_count')[:5]
-#     return render(request, 'home.html', {'posts': posts})
+def RatingView(request):
+    posts = Post.objects.annotate(
+        total_likes_count=Count('likes'),
+        total_dislikes_count=Count('dislikes')
+    ).order_by('-total_likes_count', 'total_dislikes_count')[:5]
+    return render(request, 'home.html', {'posts': posts})
 
 
 
@@ -65,7 +67,7 @@ class HomeView(ListView):
     ordering = ['-post_date', '-id']
 
     def get_context_data(self, *args, **kwargs):
-        cat_menu = Category.objects.all()
+        cat_menu = Post.objects.values('category').annotate(post_count=Count('id'))
         context = super(HomeView, self).get_context_data(*args, **kwargs)
         context['cat_menu'] = cat_menu
         return context

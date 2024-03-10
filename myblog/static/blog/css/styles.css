@@ -335,16 +335,3 @@ footer .row > div:nth-child(1) p {
 a {
     text-decoration: none;
 }
-
-
-.category {
-    flex-basis: 32%;
-}
-
-.category h4 {
-    background: #f44336;
-    color: #fff;
-    padding: 7px 0;
-    font-size: 16px;
-    margin-bottom: 20px;
-}
