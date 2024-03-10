@@ -180,6 +180,71 @@
         right: -13px;
     }
 </style>
+<div class="rated_posts">
+    <h3 class="title">Most Rated</h3>
+    {% for post in top_rated_posts %}
+        <div class="post_item" style="margin-top: 10px">
+            {% if post.header_image %}
+                <img src="{{ post.header_image.url }}" class="post_image" alt="{{ post.title }}" style="width: 90px; height: 90px"><br/>
+            {% else %}
+                <img style="width: 90px; height: 90px; transition: opacity 0.3s ease" class="post_image" src="{% static 'blog/images/photo_by_default.jpg'%}"><br/>
+            {% endif %}
+            <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h3 class="title_post" style="margin-left: 13px">{{ post.title }}</h3></a><br/>
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+
+    .post_image:hover {
+        opacity: 0.8;
+        transition: all ease 0.3s;
+    }
+
+    .post_item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .title_post:hover {
+        color: #f44336;
+        transition: all ease 0.3s;
+    }
+
+    .title_post {
+        box-sizing: border-box;
+        cursor: pointer;
+        color: rgb(33, 38, 49);
+        font-family: Nunito, sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 19.8px;
+        text-size-adjust: 100%;
+        text-decoration-style: solid;
+        width: 160px;
+        transition: all ease 0.3s;
+    }
+
+    .rated_posts .title {
+        background: #f44336;
+        color: #fff;
+        padding: 10px 0;
+        font-size: 18px;
+        margin: 0;
+        text-align: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+
+    .rated_posts {
+        flex-basis: 32%;
+        width: 360px;
+        margin-bottom: 30px;
+    }
+
+</style>
 {% load static %}
 <footer>
     <br/>
