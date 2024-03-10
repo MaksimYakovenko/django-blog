@@ -31,7 +31,6 @@ class EditForm(forms.ModelForm):
         fields = ('title', 'author', 'body', 'snippet', 'header_image')
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            # 'title_tag': forms.TextInput(attrs={'class': 'form-control'}),
             'author': forms.TextInput(attrs={'class': 'form-control',
                                              'value': '', 'id': 'yakovenko',
                                              'type': 'hidden'}),

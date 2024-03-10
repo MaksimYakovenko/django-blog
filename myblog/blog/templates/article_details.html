@@ -333,8 +333,19 @@
 <hr>
 <br/><br/>
 <h2>Comments to the post</h2>
-<br/>
-<a href="{% url 'add_comment' post.pk %}">Add Comment</a>
+
+{% if user.is_authenticated %}
+<form method="post" action="{% url 'add_comment' post.pk %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <textarea name="body" placeholder="Write your comment here" rows="3"
+              style="padding: 8px; border: 1px solid #ccc; border-radius: 20px; font-family: 'Nunito', sans-serif; font-size: 16px; width: 700px; height: 50px;"></textarea>
+
+    <button type="submit" style="background: none; border: none; margin-left: 15px; position: relative; top: -13px "><i class="fa-solid fa-paper-plane"
+                                                                    style="transform: scale(1.5)"></i></button>
+</form>
+{% else %}
+<p>Log in to your account to add comments. <a href="{% url 'login' %}">Login</a></p>
+{% endif %}
 
 {% if not post.comments.all %}
 No Comments Yet.
@@ -372,10 +383,7 @@ No Comments Yet.
 {% endif %}
 
 <br/><br/><br/><br/><br/>
-{% if user.is_authenticated %}
-{% else %}
-<p>Log in to your account to add comments. <a href="{% url 'login' %}">Login</a></p>
-{% endif %}
+
 
 <br/><br/>
 
