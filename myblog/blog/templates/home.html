@@ -23,289 +23,291 @@
 
     </style>
 </head>
-<body>
+<body style="background-color: #f9f8ff">
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
-<main>
-    <section id="blog" >
-        <div class="blog-heading">
-            <strong>Recent Blog</strong>
-            <h3>Our Blog</h3>
-        </div>
-        <div class="container">
-            <div class="row">
-                {% for post in object_list %}
-                <div class="col-lg-4 mb-4">
-                    <div class="blog-box">
-                        <div class="blog-box-img">
-                            {% if post.header_image %}
-                            <img src="{{ post.header_image.url }}">
-                            {% else %}
-                            <img src="{% static 'blog/images/photo_by_default.jpg'%}">
-                            {% endif %}
-                            <a href="{% url 'article-detail' post.pk %}" class="blog-img-link">
-                                <i class="fa-solid fa-arrow-up-right-from-square" style="margin-top: 16px"></i>
-                            </a>
-                        </div>
-                        <div class="blog-box-text">
-                            <div style="display: flex; align-items: center">
-                                <strong class="category-name"><a href="{% url 'category' post.category|slugify %}"
-                                                                 style="text-decoration: none">{{ post.category}}</a></strong>
-                                {% if user.is_authenticated %}
-                                {% if user.id == post.author.id %}
-                                <div class="dropdown" style="margin-left: auto">
-                                    <button class="btn btn-link dropdown-togggle" type="button"
-                                            style="color: black; text-decoration: none" id="dropdownMenuButton"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-bars"></i>
-                                    </button>
-                                    <div class="dropdown-menu" style="margin-left: -100px; width: 30px;"
-                                         aria-labelledby="dropdownMenuButton">
-                                        <div class="dropdown-item">
-                                            <i class="fa-regular fa-pen-to-square"></i> <a
-                                                href="{% url 'update_post' post.pk %}"
-                                                style="text-decoration: none; padding: 5px">Edit</a>
+<div style="display: flex">
+    <div style="flex: 1">
+        <main>
+            <section id="blog" style="position: relative; left: -120px">
+                <div class="blog-heading">
+                    <h3 style="font-size: 30px">Recent Posts</h3>
+                </div>
+                <div class="container" style="width: 1050px">
+                    <div class="row">
+                        {% for post in object_list %}
+                        <div class="col-lg-4 mb-4">
+                            <div class="blog-box">
+                                <div class="blog-box-img">
+                                    {% if post.header_image %}
+                                    <img src="{{ post.header_image.url }}">
+                                    {% else %}
+                                    <img src="{% static 'blog/images/photo_by_default.jpg'%}">
+                                    {% endif %}
+                                    <a href="{% url 'article-detail' post.pk %}" class="blog-img-link">
+                                        <i class="fa-solid fa-arrow-up-right-from-square" style="margin-top: 16px"></i>
+                                    </a>
+                                </div>
+                                <div class="blog-box-text">
+                                    <div style="display: flex; align-items: center">
+                                        <strong class="category-name"><a
+                                                href="{% url 'category' post.category|slugify %}"
+                                                style="text-decoration: none">{{ post.category}}</a></strong>
+                                        {% if user.is_authenticated %}
+                                        {% if user.id == post.author.id %}
+                                        <div class="dropdown" style="margin-left: auto">
+                                            <button class="btn btn-link dropdown-togggle" type="button"
+                                                    style="color: black; text-decoration: none" id="dropdownMenuButton"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-bars"></i>
+                                            </button>
+                                            <div class="dropdown-menu" style="margin-left: -100px; width: 30px;"
+                                                 aria-labelledby="dropdownMenuButton">
+                                                <div class="dropdown-item">
+                                                    <i class="fa-regular fa-pen-to-square"></i> <a
+                                                        href="{% url 'update_post' post.pk %}"
+                                                        style="text-decoration: none; padding: 5px">Edit</a>
+                                                </div>
+                                                <div class="dropdown-item">
+                                                    <i class="fa-solid fa-trash-can" style="color: red"></i> <a
+                                                        href="{% url 'delete_post' post.pk %}"
+                                                        style="color: red; text-decoration: none; padding: 5px">Delete</a>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="dropdown-item">
-                                            <i class="fa-solid fa-trash-can" style="color: red"></i> <a
-                                                href="{% url 'delete_post' post.pk %}"
-                                                style="color: red; text-decoration: none; padding: 5px">Delete</a>
-                                        </div>
+                                        {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <style>
+                                        .dropdown-togggle::after {
+                                            display: none;
+                                        }
+                                    </style>
+                                    <p class="post-title">{{ post.title }}</p>
+                                    <p>
+                                        {% if post.snippet|length > 200 %}
+                                        {{ post.snippet|slice:":200" }}...
+                                        {% else %}
+                                        {{ post.snippet }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="blog-author" style="margin-right: 65px">
+                                    <div class="blog-author-img">
+                                        {% if post.author.profile.profile_pic %}
+                                        <img src="{{ post.author.profile.profile_pic.url }}" width="200" height="200">
+                                        {% else %}
+                                        <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img"
+                                             width="200"
+                                             height="200">
+                                        {% endif %}
+                                    </div>
+                                    <div class="blog-author-text">
+                                        <strong>{{ post.author.first_name }} {{ post.author.last_name }}</strong>
+                                        <span>{{ post.post_date }}</span>
                                     </div>
                                 </div>
-                                {% endif %}
-                                {% endif %}
-                            </div>
-                            <style>
-                                .dropdown-togggle::after {
-                                    display: none;
-                                }
-                            </style>
-                            <p class="post-title">{{ post.title }}</p>
-                            <p>
-                                {% if post.snippet|length > 200 %}
-                                {{ post.snippet|slice:":200" }}...
-                                {% else %}
-                                {{ post.snippet }}
-                                {% endif %}
-                            </p>
-                        </div>
-                        <div class="blog-author" style="margin-right: 65px">
-                            <div class="blog-author-img">
-                                {% if post.author.profile.profile_pic %}
-                                <img src="{{ post.author.profile.profile_pic.url }}" width="200" height="200">
-                                {% else %}
-                                <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img"
-                                     width="200"
-                                     height="200">
-                                {% endif %}
-                            </div>
-                            <div class="blog-author-text">
-                                <strong>{{ post.author.first_name }} {{ post.author.last_name }}</strong>
-                                <span>{{ post.post_date }}</span>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
+                </div>
+                <br>
+                <nav aria-label="Page navigation example">
+                    <ul class="list-style-none flex">
+                        {% for num in page_obj.paginator.page_range %}
+                        <li {% if num in page_obj.number %} aria-current="page" {% endif %}>
+                            <a style="text-decoration: none"
+                               class="relative block rounded bg-transparent px-3 py-1.5 text-sm text-surface transition duration-300 hover:bg-neutral-100 focus:bg-neutral-100 focus:text-primary-700 focus:outline-none active:bg-neutral-100 active:text-primary-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 dark:focus:text-primary-500 dark:active:bg-neutral-700 dark:active:text-primary-500"
+                               href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </section>
+        </main>
+    </div>
+
+    <div style="flex: 1; position: relative; right: 10px; bottom: -135px">
+        <div class="category">
+            <h3>Post Categories</h3>
+            <div class="category-list">
+                {% for category in cat_menu %}
+                <div class="category-item">
+                    <span class="category-category">{{ category.category }}</span>
+                    <span class="category-count">{{ category.post_count }}</span>
                 </div>
                 {% endfor %}
             </div>
         </div>
-        <br>
-        <nav aria-label="Page navigation example">
-            <ul class="list-style-none flex">
-                {% for num in page_obj.paginator.page_range %}
-                <li {% if num in page_obj.number %} aria-current="page" {% endif %}>
-                    <a style="text-decoration: none"
-                            class="relative block rounded bg-transparent px-3 py-1.5 text-sm text-surface transition duration-300 hover:bg-neutral-100 focus:bg-neutral-100 focus:text-primary-700 focus:outline-none active:bg-neutral-100 active:text-primary-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 dark:focus:text-primary-500 dark:active:bg-neutral-700 dark:active:text-primary-500"
-                            href="?page={{ num }}"
-                    >{{ num }}</a
-                    >
-                </li>
-                {% endfor %}
-            </ul>
-        </nav>
-    </section>
-</main>
+        <style>
+            .category {
+                flex-basis: 32%;
+                width: 360px;
+                margin-bottom: 30px;
+            }
 
-<div class="category">
-    <h3>Post Categories</h3>
-    <div class="category-list">
-        {% for category in cat_menu %}
-        <div class="category-item">
-            <span class="category-category">{{ category.category }}</span>
-            <span class="category-count">{{ category.post_count }}</span>
+            .category h3 {
+                background: #f44336;
+                color: #fff;
+                padding: 10px 0;
+                font-size: 18px;
+                margin: 0;
+                text-align: center;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+            .category-list {
+                padding: 20px;
+            }
+
+            .category-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+                margin-left: -15px;
+            }
+
+            .category-category {
+                color: #333;
+                font-family: Poppins, sans-serif;
+                font-size: 16px;
+                font-weight: 400;
+            }
+
+            .category-count {
+                color: #888;
+                font-size: 15px;
+                position: relative;
+                right: -13px;
+            }
+        </style>
+        <div class="rated_posts">
+            <h3 class="title">Most Rated Posts</h3>
+            {% for post in top_rated_posts %}
+            <div class="post_item" style="margin-top: 10px">
+                {% if post.header_image %}
+                <img src="{{ post.header_image.url }}" class="post_image" alt="{{ post.title }}"
+                     style="width: 90px; height: 90px"><br/>
+                {% else %}
+                <img style="width: 90px; height: 90px; transition: opacity 0.3s ease" class="post_image"
+                     src="{% static 'blog/images/photo_by_default.jpg'%}"><br/>
+                {% endif %}
+                <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h3 class="title_post"
+                                                                                               style="margin-left: 13px">
+                    {{ post.title }}</h3></a><br/>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+
+        <div class="active-users">
+            <h3 class="active-users-title">Most Active Users</h3>
+            {% for user in active_users %}
+            <div class="user-item">
+                <span class="user">{{ user.first_name }} {{ user.last_name }}</span>
+                <span class="post-count">{{ user.post_count }} posts</span>
+            </div>
+            {% endfor %}
+        </div>
+        <style>
+            .user-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+                margin-left: -15px;
+            }
+
+            .user {
+                color: #333;
+                font-family: Poppins, sans-serif;
+                font-size: 16px;
+                font-weight: 400;
+                position: relative;
+                left: 15px;
+            }
+
+            .post-count {
+                color: #888;
+                font-size: 15px;
+                position: relative;
+                right: 5px;
+            }
+
+            .active-users {
+                flex-basis: 32%;
+                width: 360px;
+                margin-bottom: 30px;
+            }
+
+            .active-users .active-users-title {
+                background: #f44336;
+                color: #fff;
+                padding: 10px 0;
+                font-size: 18px;
+                margin: 0;
+                text-align: center;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+            .post_image:hover {
+                opacity: 0.8;
+                transition: all ease 0.3s;
+            }
+
+            .post_item {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .title_post:hover {
+                color: #f44336;
+                transition: all ease 0.3s;
+            }
+
+            .title_post {
+                box-sizing: border-box;
+                cursor: pointer;
+                color: rgb(33, 38, 49);
+                font-family: Nunito, sans-serif;
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 19.8px;
+                text-size-adjust: 100%;
+                text-decoration-style: solid;
+                width: 160px;
+                transition: all ease 0.3s;
+            }
+
+            .rated_posts .title {
+                background: #f44336;
+                color: #fff;
+                padding: 10px 0;
+                font-size: 18px;
+                margin: 0;
+                text-align: center;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+
+            .rated_posts {
+                flex-basis: 32%;
+                width: 360px;
+                margin-bottom: 30px;
+            }
+
+        </style>
     </div>
 </div>
-
-<style>
-
-
-    .category {
-        flex-basis: 32%;
-        width: 360px;
-        margin-bottom: 30px;
-    }
-
-    .category h3 {
-        background: #f44336;
-        color: #fff;
-        padding: 10px 0;
-        font-size: 18px;
-        margin: 0;
-        text-align: center;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-    }
-
-    .category-list {
-        padding: 20px;
-    }
-
-    .category-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-        margin-left: -15px;
-    }
-
-    .category-category {
-        color: #333;
-        font-family: Poppins, sans-serif;
-        font-size: 16px;
-        font-weight: 400;
-    }
-
-    .category-count {
-        color: #888;
-        font-size: 15px;
-        position: relative;
-        right: -13px;
-    }
-</style>
-<div class="rated_posts">
-    <h3 class="title">Most Rated Posts</h3>
-    {% for post in top_rated_posts %}
-    <div class="post_item" style="margin-top: 10px">
-        {% if post.header_image %}
-        <img src="{{ post.header_image.url }}" class="post_image" alt="{{ post.title }}"
-             style="width: 90px; height: 90px"><br/>
-        {% else %}
-        <img style="width: 90px; height: 90px; transition: opacity 0.3s ease" class="post_image"
-             src="{% static 'blog/images/photo_by_default.jpg'%}"><br/>
-        {% endif %}
-        <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h3 class="title_post"
-                                                                                       style="margin-left: 13px">{{ post.title }}</h3></a><br/>
-    </div>
-    {% endfor %}
-</div>
-
-<div class="active-users">
-    <h3 class="active-users-title">Most Active Users</h3>
-    {% for user in active_users %}
-        <div class="user-item">
-            <span class="user">{{ user.first_name }} {{ user.last_name }}</span>
-            <span class="post-count">{{ user.post_count }} posts</span>
-        </div>
-    {% endfor %}
-</div>
-<style>
-    .user-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-        margin-left: -15px;
-    }
-
-    .user {
-        color: #333;
-        font-family: Poppins, sans-serif;
-        font-size: 16px;
-        font-weight: 400;
-        position: relative;
-        left: 15px;
-    }
-
-    .post-count {
-        color: #888;
-        font-size: 15px;
-        position: relative;
-        right: 5px;
-    }
-
-    .active-users {
-        flex-basis: 32%;
-        width: 360px;
-        margin-bottom: 30px;
-    }
-
-    .active-users .active-users-title {
-        background: #f44336;
-        color: #fff;
-        padding: 10px 0;
-        font-size: 18px;
-        margin: 0;
-        text-align: center;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-    }
-
-    .post_image:hover {
-        opacity: 0.8;
-        transition: all ease 0.3s;
-    }
-
-    .post_item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .title_post:hover {
-        color: #f44336;
-        transition: all ease 0.3s;
-    }
-
-    .title_post {
-        box-sizing: border-box;
-        cursor: pointer;
-        color: rgb(33, 38, 49);
-        font-family: Nunito, sans-serif;
-        font-size: 18px;
-        font-weight: 600;
-        line-height: 19.8px;
-        text-size-adjust: 100%;
-        text-decoration-style: solid;
-        width: 160px;
-        transition: all ease 0.3s;
-    }
-
-    .rated_posts .title {
-        background: #f44336;
-        color: #fff;
-        padding: 10px 0;
-        font-size: 18px;
-        margin: 0;
-        text-align: center;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-    }
-
-
-    .rated_posts {
-        flex-basis: 32%;
-        width: 360px;
-        margin-bottom: 30px;
-    }
-
-</style>
 {% load static %}
 <footer>
     <br/>

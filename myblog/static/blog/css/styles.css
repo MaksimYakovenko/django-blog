@@ -22,8 +22,7 @@ ul {
 #blog {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start; /* изменено с center на flex-start */
     padding: 50px 0px;
     background-color: #f9f8ff;
     max-width: none;
