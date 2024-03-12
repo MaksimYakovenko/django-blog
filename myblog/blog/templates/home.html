@@ -28,10 +28,11 @@
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+<h2 class="heading">Trending Posts</h2>
 <br/><br/>
 <div id="topRatedCarousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
-        {% for post in top_rated_posts %}
+        {% for post in trending_posts %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
             <div class="card" style="width: 400px; height: auto">
                 <div class="card-image" style="position: relative; left: -300px">
@@ -44,25 +45,25 @@
                     {% endif %}
                 </div>
                 <div style="position: relative; right: -150px; bottom: 70px; transform: scale(1.1)">
-                    <div style="display: flex">
+                    <div style="display: flex; justify-content: space-between">
                         <div class="card-category" style="flex: 1">
-                            <p>{{ post.category }}</p>
-                        </div>
-                        <div class="card-date" style="flex: 1;">
-                            {{post.post_date}}
+                            <p>{{ post.category }} &mdash;</p>
                         </div>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">{{ post.title }}</h5>
+                        <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h5
+                                class="card-title">{{ post.title }}</h5></a>
                     </div>
                     <div class="card-snippet">
-                        <p>
-                            {% if post.snippet|length > 200 %}
-                            {{ post.snippet|slice:":200" }}...
-                            {% else %}
-                            {{ post.snippet }}
-                            {% endif %}
-                        </p>
+                        <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none; color: rgb(136, 136, 136)">
+                            <p>
+                                {% if post.snippet|length > 200 %}
+                                {{ post.snippet|slice:":200" }}...
+                                {% else %}
+                                {{ post.snippet }}
+                                {% endif %}
+                            </p>
+                        </a>
                     </div>
                     <div class="blog-author" style="position: relative; right: 75px; top: -10px">
                         <div class="blog-author-img">
@@ -74,6 +75,7 @@
                         </div>
                         <div class="blog-author-text">
                             <strong>{{ post.author.first_name }} {{ post.author.last_name }}</strong>
+                            <span>{{post.post_date}}</span>
                         </div>
                     </div>
                 </div>
@@ -91,6 +93,19 @@
     </a>
 </div>
 <style>
+
+    .heading {
+        box-sizing: border-box;
+        color: rgb(0, 0, 0);
+        display: block;
+        font-family: Poppins, sans-serif;
+        font-size: 36px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 36px;
+
+    }
+
     #topRatedCarousel .carousel-inner .carousel-item {
         text-align: left;
     }
@@ -203,13 +218,12 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <div style="display: flex; margin-top: -85px">
     <div style="flex: 1">
         <main>
             <section id="blog" style="position: relative; left: -120px">
                 <div class="blog-heading">
-                    <h3 style="font-size: 30px; position: relative; left: 25px">Recent Posts</h3>
+                    <h3 style="font-size: 26px; position: relative; left: 25px">Recent Posts</h3>
                 </div>
                 <div class="container" style="width: 1050px">
                     <div class="row">
@@ -230,7 +244,15 @@
                                     <div style="display: flex; align-items: center">
                                         <strong class="category-name"><a
                                                 href="{% url 'category' post.category|slugify %}"
-                                                style="text-decoration: none">{{ post.category}}</a></strong>
+                                                style="text-decoration: none">{{ post.category}} &mdash;</a></strong>
+                                        {% for top_post in rated_posts %}
+                                        {% if top_post.id == post.id %}
+                                        <span class="post-rating">Place: {{ forloop.counter }}</span>
+                                        {% if forloop.first %} <i class="fa-solid fa-trophy"
+                                                                  style="position: relative; left: 15px; color: goldenrod"></i>
+                                        {% endif %}
+                                        {% endif %}
+                                        {% endfor %}
                                         {% if user.is_authenticated %}
                                         {% if user.id == post.author.id %}
                                         <div class="dropdown" style="margin-left: auto">
@@ -319,10 +341,26 @@
             </div>
         </div>
         <style>
+
+            .category-category:hover {
+                color: #999;
+            }
+
             .category {
                 flex-basis: 32%;
                 width: 360px;
                 margin-bottom: 30px;
+            }
+
+            .post-rating {
+                color: rgb(153, 153, 153);
+                font-size: 14px;
+                text-size-adjust: 100%;
+                box-sizing: border-box;
+                line-height: 21px;
+                font-family: Poppins, sans-serif;
+                position: relative;
+                left: 5px;
             }
 
             .category h3 {
@@ -400,6 +438,11 @@
                 margin-left: -15px;
             }
 
+            .user:hover {
+                color: #999;
+                transition: all ease 0.3s;
+            }
+
             .user {
                 color: #333;
                 font-family: Poppins, sans-serif;
@@ -407,6 +450,7 @@
                 font-weight: 400;
                 position: relative;
                 left: 15px;
+                transition: all ease 0.3s;
             }
 
             .post-count {

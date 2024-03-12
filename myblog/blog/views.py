@@ -79,14 +79,22 @@ class HomeView(ListView):
             post_count=Count('id'))
         context = super(HomeView, self).get_context_data(*args, **kwargs)
         context['cat_menu'] = cat_menu
-
         top_rated_posts = Post.objects.annotate(
             total_likes_count=Count('likes'),
             total_dislikes_count=Count('dislikes')
         ).order_by('-total_likes_count', 'total_dislikes_count')[:4]
+        rated_posts = Post.objects.annotate(
+            total_likes_count=Count('likes'),
+            total_dislikes_count=Count('dislikes')
+        ).order_by('-total_likes_count', 'total_dislikes_count')
         active_users = User.objects.annotate(
             post_count=Count('post')
         ).order_by('-post_count')[:4]
+        trending_posts = Post.objects.annotate(
+            comment_count=Count('comments')
+        ).order_by('-comment_count')[:4]
+        context['rated_posts'] = rated_posts
+        context['trending_posts'] = trending_posts
         context['active_users'] = active_users
         context['top_rated_posts'] = top_rated_posts
         return context
