@@ -56,15 +56,15 @@
                                 <span class="post-rating" style="position: relative; bottom: 8px; font-weight: normal">Place: {{ forloop.counter }}</span>
                                 {% if forloop.first %}
                                 <i class="fa-solid fa-trophy"
-                                   style="margin-left: 13px; position: relative; bottom: 8px; color: goldenrod;" title="winner by reactions"></i>
+                                   style="margin-left: 13px; position: relative; bottom: 8px; color: goldenrod;" title="winner by reactions"></i> <span class="post-rating" style="bottom: 8px; font-weight: normal">by comments</span>
                                 {% endif %}
                                 {% if forloop.counter == 2 %}
                                     <i class="fa-solid fa-trophy"
-                                   style="margin-left: 13px; position: relative; bottom: 8px; color: silver;"></i>
+                                   style="margin-left: 13px; position: relative; bottom: 8px; color: silver;"></i> <span class="post-rating" style="bottom: 8px; font-weight: normal">by comments</span>
                                 {% endif %}
                                 {% if forloop.counter == 3 %}
                                     <i class="fa-solid fa-trophy"
-                                   style="margin-left: 13px; position: relative; bottom: 8px; color: #cd7f32;"></i>
+                                   style="margin-left: 13px; position: relative; bottom: 8px; color: #cd7f32;"></i> <span class="post-rating" style="bottom: 8px; font-weight: normal">by comments</span>
                                 {% endif %}
                                 {% endif %}
                                 {% endfor %}

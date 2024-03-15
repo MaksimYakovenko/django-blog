@@ -4,119 +4,328 @@
     <meta charset="UTF-8">
     <title>Main Page</title>
 </head>
-<body>
+<body style="background-color: #f9f8ff">
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
 <script src="https://kit.fontawesome.com/130fa5f424.js" crossorigin="anonymous"></script>
 <br/>
-<div class="card mb-3" style="position: relative; left: -55px">
-    <div class="row no-gutters">
-        <div class="col-md-2">
-            {% if page_user.profile_pic %}
+<div style="display: flex">
+    <div style="flex: 1; position: relative; top: -20px">
+        <section id="blog">
+            <div class="blog-heading" style="position: relative; left: -135px; font-size: 23px">
+                Recent posts by {{page_user.user.first_name }} {{ page_user.user.last_name }}
+            </div>
+            <br/><br/><br/><br/>
+            <div style="position: relative; top: -50px; left: -20px;">
+                {% for post in posts %}
+                <div class="box-blog">
+                    <div class="card-image">
+                        {% if post.header_image %}
+                        <img src="{{ post.header_image.url }}"
+                             style="border-radius: 15px;" class="image">
+                        {% else %}
+                        <img src="{% static 'blog/images/photo_by_default.jpg'%}"
+                             style="border-radius: 15px" class="image">
+                        {% endif %}
+                    </div>
+                    <div style="position: relative; transform: scale(1.06); right: -180px; bottom: 70px">
+                        <div class="card-category">
+                            {{ post.category }}
+                        </div>
+                        {% for top_post in rated_posts %}
+                        {% if top_post.id == post.id %}
+                        <span class="post-rating">Place: {{ forloop.counter }}</span>
+                        {% if forloop.first %} <i class="fa-solid fa-trophy"
+                                                  style="position: relative; left: 15px; bottom: 1px; color: goldenrod"
+                                                  title="winner by reactions"></i>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <i class="fa-solid fa-trophy"
+                           style="position: relative; left: 15px; bottom: 1px; color: silver"></i>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <i class="fa-solid fa-trophy"
+                           style="position: relative; left: 15px; bottom: 1px; color: #cd7f32"></i>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% if user.is_authenticated %}
+                        {% if user.id == post.author.id %}
+                        <div class="dropdown" style="margin-left: auto">
+                            <button class="btn btn-link dropdown-togggle" type="button"
+                                    style="color: black; text-decoration: none" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <div class="dropdown-menu" style="margin-left: -100px; width: 30px;"
+                                 aria-labelledby="dropdownMenuButton">
+                                <div class="dropdown-item">
+                                    <i class="fa-regular fa-pen-to-square"></i> <a
+                                        href="{% url 'update_post' post.pk %}"
+                                        style="text-decoration: none; padding: 5px">Edit</a>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="fa-solid fa-trash-can" style="color: red"></i> <a
+                                        href="{% url 'delete_post' post.pk %}"
+                                        style="color: red; text-decoration: none; padding: 5px">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                        <div class="card-body">
+                            <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h3
+                                    class="title_post">{{ post.title }}</h3></a>
+                        </div>
+                        <div class="card-snippet">
+                            <a href="{% url 'article-detail' post.pk %}"
+                               style="text-decoration: none; color: rgb(136, 136, 136)">
+                                <p>
+                                    {% if post.snippet|length > 200 %}
+                                    {{ post.snippet|slice:":200" }}...
+                                    {% else %}
+                                    {{ post.snippet }}
+                                    {% endif %}
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+    <div class="card" style="background-color: #f9f8ff; transform: scale(1.01);">
+        <div class="profile-image">
+            {% if page_user.profile_pic %}-->
             <img src="{{ page_user.profile_pic.url }}" class="card-img">
             {% else %}
             <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img">
             {% endif %}
         </div>
-        <div class="col-md-10">
-            <div class="card-body">
-                <h2 class="card-title">{{ page_user.user.first_name }}
-                    {{ page_user.user.last_name }}
-                </h2>
-                <p class="small text-muted">
-                <div style="margin-left: -10px">
-                    {% if page_user.instagram_url %}
-                    <a href="{{ page_user.instagram_url }}" style="color: black"><i
-                            class="fa-brands fa-instagram social-icon"></i></a>
-                    {% endif %}
-
-                    {% if page_user.twitter_url %}
-                    <a href="{{ page_user.twitter_url }}" style="color: black"><i
-                            class="fa-brands fa-x-twitter social-icon"></i></a>
-                    {% endif %}
-
-                    {% if page_user.facebook_url %}
-                    <a href="{{ page_user.facebook_url }}" style="color: black"><i
-                            class="fa-brands fa-facebook social-icon"></i></a>
-                    {% endif %}
-                    </p>
-                </div>
-                <p class="card-text">{{ page_user.bio }}</p>
+        <div class="profile-name">
+            {{page_user.user.first_name }} {{ page_user.user.last_name }}
+        </div>
+        <div class="profile-email">
+            {{ page_user.user.email }}
+        </div>
+        <div class="custom-hr">
+            <hr>
+        </div>
+        <div class="profile-bio">
+            {% if page_user.bio|length > 200 %}
+            {{ page_user.bio|slice:":200" }}...
+            {% else %}
+            {{ page_user.bio }}
+            {% endif %}
+        </div>
+        <div class="links">
+            <div style="margin-left: -10px">
+                {% if page_user.instagram_url %}
+                <a href="{{ page_user.instagram_url }}" style="color: black"><i
+                        class="fa-brands fa-instagram social-icon"></i></a>
+                {% endif %}
+                {% if page_user.twitter_url %}
+                <a href="{{ page_user.twitter_url }}" style="color: black"><i
+                        class="fa-brands fa-x-twitter social-icon" style="position: relative; right: -6px"></i></a>
+                {% endif %}
+                {% if page_user.facebook_url %}
+                <a href="{{ page_user.facebook_url }}" style="color: black"><i
+                        class="fa-brands fa-facebook social-icon" style="position: relative; right: -10px"></i></a>
+                {% endif %}
+                </p>
             </div>
         </div>
     </div>
+    <style>
+        .card-title {
+            font-family: Poppins, sans-serif;
+            font-size: 30px;
+            font-weight: 600;
+        }
+
+        .card {
+            margin-left: -80px;
+        }
+
+        .social-icon {
+            color: black;
+            margin-left: 15px;
+            transform: scale(1.5);
+            transition: all ease 0.3s;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .social-icon:hover {
+            color: #f44336;
+            transition: all ease 0.3s;
+        }
+
+        .card-img {
+            border-radius: 50%;
+            width: 165px;
+            height: 165px;
+            position: relative;
+            bottom: -5px;
+            left: 20px;
+        }
+
+        .card-image {
+            margin-top: -50px;
+        }
+
+
+        .card {
+            border: none;
+        }
+
+        .blog-heading {
+            font-size: 2.4rem;
+            color: #252525;
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 2.4rem;
+        }
+
+        .title_post {
+            font-size: 25px;
+            color: #252525;
+            font-family: Poppins, sans-serif;
+            font-weight: bold;
+            line-height: 1.8rem;
+            margin: 5px 0px 10px 0px;
+        }
+
+        .card-snippet {
+            color: rgb(136, 136, 136);
+            box-sizing: border-box;
+            display: block;
+            font-family: Poppins, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 21px;
+            margin-block-end: 16px;
+            text-size-adjust: 100%;
+            width: 500px;
+            margin-top: -20px;
+            margin-left: 20px;
+            position: relative;
+            top: -6px;
+        }
+
+        .card-img {
+            width: 140px;
+            height: 140px;
+        }
+
+        .dropdown-togggle::after {
+            display: none;
+        }
+
+        .card-category {
+            box-sizing: border-box;
+            color: rgb(34, 34, 34);
+            cursor: pointer;
+            font-family: Poppins, sans-serif;
+            font-size: 14px;
+            line-height: 21px;
+            font-weight: 600;
+            text-size-adjust: 100%;
+            margin-left: 20px;
+            margin-bottom: -30px;
+            position: relative;
+            bottom: 10px;
+        }
+
+        .card-image {
+            position: relative;
+            left: -120px;
+            bottom: -90px;
+        }
+
+        .card-image .image {
+            width: 270px;
+            height: 200px;
+            position: relative;
+            left: 0;
+        }
+
+        .profile-image {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            position: relative;
+            left: 120px;
+        }
+
+        .profile-name {
+            position: relative;
+            bottom: -60px;
+            font-size: 23px;
+            font-family: Poppins, sans-serif;
+            left: 110px;
+            font-weight: bold;
+        }
+
+        .profile-email {
+            position: relative;
+            bottom: -68px;
+            left: 80px;
+            font-family: Poppins, sans-serif;
+            font-size: 18px;
+            color: #818181;
+        }
+
+        .custom-hr {
+            position: relative;
+            bottom: -75px;
+            left: 80px;
+            top: 65px;
+        }
+
+        .profile-bio {
+            color: #818181;
+            width: 280px;
+            position: relative;
+            bottom: -85px;
+            font-family: Poppins, sans-serif;
+            text-align: center;
+            left: 85px;
+            top: 60px;
+        }
+
+        .links {
+            position: relative;
+            top: 80px;
+            left: 175px;
+        }
+
+        .card {
+            position: fixed;
+            z-index: 999;
+            right: 220px;
+            top: 80px;
+        }
+
+        .box-blog {
+            transition: all ease 0.3s;
+        }
+
+        .box-blog:hover {
+            background-color: #f9f8ff;
+            /*box-shadow: 16px 20px 50px rgba(0, 0, 0, 0.12);*/
+        }
+
+        .box-blog:hover {
+            transform: scale(1.01);
+            transition: all ease 0.3s;
+        }
+
+    </style>
 </div>
-<br/>
-<main>
-    <section id="blog">
-        <div class="blog-heading" style="position: relative; left: -110px; font-size: 23px">
-            Recent posts by {{page_user.user.first_name }} {{ page_user.user.last_name }}
-        </div>
-        {% for post in object_list %}
-        <div class="post">
-            <h3>{{ post.title }}</h3>
-            <p>{{ post.content }}</p>
-        </div>
-        {% endfor %}
-    </section>
-</main>
-
-<style>
-    .card-title {
-        font-family: Poppins, sans-serif;
-        font-size: 30px;
-        font-weight: 600;
-    }
-
-    .card {
-        margin-left: -80px;
-    }
-
-    .social-icon {
-        color: black;
-        margin-left: 15px;
-        transform: scale(1.5);
-        transition: all ease 0.3s;
-        display: inline-block;
-        vertical-align: middle;
-    }
-
-    .social-icon:hover {
-        color: #f44336;
-        transition: all ease 0.3s;
-    }
-
-    .card-img {
-        border-radius: 50%;
-        width: 165px;
-        height: 165px;
-        position: relative;
-        bottom: -5px;
-        left: 20px;
-    }
-
-    .card-text {
-        font-family: Poppins, sans-serif;
-        font-size: 17px;
-        width: 800px;
-        color: black;
-        margin-top: 5px;
-
-    }
-
-    .card {
-        border: none;
-    }
-
-    .blog-heading {
-        font-size: 2.4rem;
-        color: #252525;
-        font-weight: 800;
-        text-transform: uppercase;
-        line-height: 2.4rem;
-    }
-</style>
 {% endblock %}
 
 </body>

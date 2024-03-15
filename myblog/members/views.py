@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm, \
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 from .forms import SignUpForm, EditProfileForm, PasswordChangingForm, ProfilePageForm
-from blog.models import Profile
+from blog.models import Profile, Post
 
 class CreateProfilePageView(CreateView):
     model = Profile
@@ -34,8 +34,14 @@ class ShowProfilePageView(DetailView):
         context = super(ShowProfilePageView, self).get_context_data(*args,
                                                                     **kwargs)
         page_user = get_object_or_404(Profile, id=self.kwargs['pk'])
-
+        posts = Post.objects.filter(author=page_user.user)
+        rated_posts = Post.objects.annotate(
+            total_likes_count=Count('likes'),
+            total_dislikes_count=Count('dislikes')
+        ).order_by('-total_likes_count', 'total_dislikes_count')
+        context['rated_posts'] = rated_posts
         context['page_user'] = page_user
+        context['posts'] = posts
         return context
 
 
