@@ -92,7 +92,7 @@ class HomeView(ListView):
         ).order_by('-post_count')[:4]
         trending_posts = Post.objects.annotate(
             comment_count=Count('comments')
-        ).order_by('-comment_count')[:4]
+        ).order_by('-comment_count')[:3]
         context['rated_posts'] = rated_posts
         context['trending_posts'] = trending_posts
         context['active_users'] = active_users
@@ -131,7 +131,11 @@ class ArticleDetailView(DetailView):
             feedback = 'dislike'
         else:
             feedback = ''
-
+        rated_posts = Post.objects.annotate(
+            total_likes_count=Count('likes'),
+            total_dislikes_count=Count('dislikes')
+        ).order_by('-total_likes_count', 'total_dislikes_count')
+        context['rated_posts'] = rated_posts
         context['cat_menu'] = cat_menu
         context['total_likes'] = total_likes
         context['total_dislikes'] = total_dislikes

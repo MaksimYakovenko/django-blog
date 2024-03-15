@@ -45,9 +45,30 @@
                     {% endif %}
                 </div>
                 <div style="position: relative; right: -150px; bottom: 70px; transform: scale(1.1)">
-                    <div style="display: flex; justify-content: space-between">
+                    <div style="display: flex; position: relative; bottom: 5px">
                         <div class="card-category" style="flex: 1">
-                            <p>{{ post.category }} &mdash;</p>
+                            <div style="display: flex; align-items: center;">
+                                <strong class="category-name">
+                                    <p>{{ post.category }} <span style="font-weight: normal;">&mdash;</span></p>
+                                </strong>
+                                {% for top_post in trending_posts %}
+                                {% if top_post.id == post.id %}
+                                <span class="post-rating" style="position: relative; bottom: 8px; font-weight: normal">Place: {{ forloop.counter }}</span>
+                                {% if forloop.first %}
+                                <i class="fa-solid fa-trophy"
+                                   style="margin-left: 13px; position: relative; bottom: 8px; color: goldenrod;" title="winner by reactions"></i>
+                                {% endif %}
+                                {% if forloop.counter == 2 %}
+                                    <i class="fa-solid fa-trophy"
+                                   style="margin-left: 13px; position: relative; bottom: 8px; color: silver;"></i>
+                                {% endif %}
+                                {% if forloop.counter == 3 %}
+                                    <i class="fa-solid fa-trophy"
+                                   style="margin-left: 13px; position: relative; bottom: 8px; color: #cd7f32;"></i>
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -55,7 +76,8 @@
                                 class="card-title">{{ post.title }}</h5></a>
                     </div>
                     <div class="card-snippet">
-                        <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none; color: rgb(136, 136, 136)">
+                        <a href="{% url 'article-detail' post.pk %}"
+                           style="text-decoration: none; color: rgb(136, 136, 136)">
                             <p>
                                 {% if post.snippet|length > 200 %}
                                 {{ post.snippet|slice:":200" }}...
@@ -68,13 +90,13 @@
                     <div class="blog-author" style="position: relative; right: 75px; top: -10px">
                         <div class="blog-author-img">
                             {% if post.author.profile.profile_pic %}
-                            <img src="{{ post.author.profile.profile_pic.url }}">
+                            <a href="{% url 'show_profile_page' post.author.profile.id %}" style="text-decoration: none"><img src="{{ post.author.profile.profile_pic.url }}"></a>
                             {% else %}
-                            <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img">
+                            <a href="{% url 'show_profile_page' post.author.profile.id %}" style="text-decoration: none"><img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img"></a>
                             {% endif %}
                         </div>
                         <div class="blog-author-text">
-                            <strong>{{ post.author.first_name }} {{ post.author.last_name }}</strong>
+                            <a href="{% url 'show_profile_page' post.author.profile.id %}" style="text-decoration: none"><strong>{{ post.author.first_name }} {{ post.author.last_name }}</strong></a>
                             <span>{{post.post_date}}</span>
                         </div>
                     </div>
@@ -249,7 +271,15 @@
                                         {% if top_post.id == post.id %}
                                         <span class="post-rating">Place: {{ forloop.counter }}</span>
                                         {% if forloop.first %} <i class="fa-solid fa-trophy"
-                                                                  style="position: relative; left: 15px; color: goldenrod"></i>
+                                                                  style="position: relative; left: 15px; bottom: 1px; color: goldenrod" title="winner by reactions"></i>
+                                        {% endif %}
+                                        {% if forloop.counter == 2 %}
+                                            <i class="fa-solid fa-trophy"
+                                                                  style="position: relative; left: 15px; bottom: 1px; color: silver"></i>
+                                        {% endif %}
+                                        {% if forloop.counter == 3 %}
+                                            <i class="fa-solid fa-trophy"
+                                                                  style="position: relative; left: 15px; bottom: 1px; color: #cd7f32"></i>
                                         {% endif %}
                                         {% endif %}
                                         {% endfor %}

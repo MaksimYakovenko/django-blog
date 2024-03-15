@@ -8,44 +8,115 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1>User Profile</h1>
+<script src="https://kit.fontawesome.com/130fa5f424.js" crossorigin="anonymous"></script>
 <br/>
-<div class="card mb-3">
+<div class="card mb-3" style="position: relative; left: -55px">
     <div class="row no-gutters">
         <div class="col-md-2">
-{% if page_user.profile_pic %}
-    <img src="{{ page_user.profile_pic.url }}" class="card-img" width="200" height="200">
-{% else %}
-    <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img" width="200" height="200">
-{% endif %}
+            {% if page_user.profile_pic %}
+            <img src="{{ page_user.profile_pic.url }}" class="card-img">
+            {% else %}
+            <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img">
+            {% endif %}
         </div>
         <div class="col-md-10">
             <div class="card-body">
-                <h5 class="card-title">{{ page_user.user.first_name }}
+                <h2 class="card-title">{{ page_user.user.first_name }}
                     {{ page_user.user.last_name }}
-                </h5>
+                </h2>
                 <p class="small text-muted">
-                    {% if page_user.website_url %}
-                     <a href="{{ page_user.website_url }}">Website</a>
-                    {% endif %}
-
+                <div style="margin-left: -10px">
                     {% if page_user.instagram_url %}
-                    | <a href="{{ page_user.instagram_url }}">Instagram</a>
+                    <a href="{{ page_user.instagram_url }}" style="color: black"><i
+                            class="fa-brands fa-instagram social-icon"></i></a>
                     {% endif %}
 
                     {% if page_user.twitter_url %}
-                    | <a href="{{ page_user.twitter_url }}">Twitter</a>
+                    <a href="{{ page_user.twitter_url }}" style="color: black"><i
+                            class="fa-brands fa-x-twitter social-icon"></i></a>
                     {% endif %}
 
                     {% if page_user.facebook_url %}
-                    | <a href="{{ page_user.facebook_url }}">Facebook</a>
+                    <a href="{{ page_user.facebook_url }}" style="color: black"><i
+                            class="fa-brands fa-facebook social-icon"></i></a>
                     {% endif %}
-                </p>
+                    </p>
+                </div>
                 <p class="card-text">{{ page_user.bio }}</p>
             </div>
         </div>
     </div>
 </div>
+<br/>
+<main>
+    <section id="blog">
+        <div class="blog-heading" style="position: relative; left: -110px; font-size: 23px">
+            Recent posts by {{page_user.user.first_name }} {{ page_user.user.last_name }}
+        </div>
+        {% for post in object_list %}
+        <div class="post">
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.content }}</p>
+        </div>
+        {% endfor %}
+    </section>
+</main>
+
+<style>
+    .card-title {
+        font-family: Poppins, sans-serif;
+        font-size: 30px;
+        font-weight: 600;
+    }
+
+    .card {
+        margin-left: -80px;
+    }
+
+    .social-icon {
+        color: black;
+        margin-left: 15px;
+        transform: scale(1.5);
+        transition: all ease 0.3s;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .social-icon:hover {
+        color: #f44336;
+        transition: all ease 0.3s;
+    }
+
+    .card-img {
+        border-radius: 50%;
+        width: 165px;
+        height: 165px;
+        position: relative;
+        bottom: -5px;
+        left: 20px;
+    }
+
+    .card-text {
+        font-family: Poppins, sans-serif;
+        font-size: 17px;
+        width: 800px;
+        color: black;
+        margin-top: 5px;
+
+    }
+
+    .card {
+        border: none;
+    }
+
+    .blog-heading {
+        font-size: 2.4rem;
+        color: #252525;
+        font-weight: 800;
+        text-transform: uppercase;
+        line-height: 2.4rem;
+    }
+</style>
 {% endblock %}
 
 </body>
