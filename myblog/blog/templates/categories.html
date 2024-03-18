@@ -2,29 +2,398 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="static/blog/images/favicon-logo1.ico">
     <title>Categories</title>
 </head>
-<body>
+<body style="background-color: #f9f8ff">
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
 {% if category_posts %}
-<h1>{{ cats }}</h1>
-<ul>
-    {% for post in category_posts %}
-    <li><a href="{% url 'article-detail' post.pk %}">{{ post.title }}</a> - {{ post.category }} -
-        {{ post.author.first_name }} {{ post.author.last_name }} - {{ post.post_date }} <small>
-            {% if user.is_authenticated %}
-            {% if user.id == post.author.id %}
-            <a href="{% url 'update_post' post.pk %}">(Edit)</a>
-            <a href="{% url 'delete_post' post.pk %}">(Delete)</a>
-            {% endif %}
-        </small> <br/>
-        {{ post.body|slice:":200"|safe }}
-    </li>
-    {% endif %}
-    {% endfor %}
-</ul>
+<h1 style="text-align: center; font-family: Poppins, sans-serif">{{ cats }}</h1>
+<br/>
+<div style="display: flex; margin-top: -85px">
+    <div style="flex: 1">
+        <main>
+            <section id="blog" style="position: relative; left: -120px">
+                <div class="blog-heading">
+                    <h3 style="font-size: 26px; position: relative; left: 25px">Recent Posts by category {{ cats }}</h3>
+                </div>
+                <div class="container" style="width: 1050px">
+                    <div class="row">
+                        {% for post in category_posts %}
+                        <div class="col-lg-4 mb-4">
+                            <div class="blog-box">
+                                <div class="blog-box-img">
+                                    {% if post.header_image %}
+                                    <img src="{{ post.header_image.url }}">
+                                    {% else %}
+                                    <img src="{% static 'blog/images/photo_by_default.jpg'%}">
+                                    {% endif %}
+                                    <a href="{% url 'article-detail' post.pk %}" class="blog-img-link">
+                                        <i class="fa-solid fa-arrow-up-right-from-square" style="margin-top: 16px"></i>
+                                    </a>
+                                </div>
+                                <div class="blog-box-text">
+                                    <div style="display: flex; align-items: center">
+                                        <strong class="category-name"><a
+                                                href="{% url 'category' post.category|slugify %}"
+                                                style="text-decoration: none">{{ post.category}} &mdash;</a></strong>
+                                        {% for top_post in rated_posts %}
+                                        {% if top_post.id == post.id %}
+                                        <span class="post-rating">Place: {{ forloop.counter }}</span>
+                                        {% if forloop.first %} <i class="fa-solid fa-trophy"
+                                                                  style="position: relative; left: 15px; bottom: 1px; color: goldenrod"
+                                                                  title="winner by reactions"></i>
+                                        {% endif %}
+                                        {% if forloop.counter == 2 %}
+                                        <i class="fa-solid fa-trophy"
+                                           style="position: relative; left: 15px; bottom: 1px; color: silver"></i>
+                                        {% endif %}
+                                        {% if forloop.counter == 3 %}
+                                        <i class="fa-solid fa-trophy"
+                                           style="position: relative; left: 15px; bottom: 1px; color: #cd7f32"></i>
+                                        {% endif %}
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% if user.is_authenticated %}
+                                        {% if user.id == post.author.id %}
+                                        <div class="dropdown" style="margin-left: auto">
+                                            <button class="btn btn-link dropdown-togggle" type="button"
+                                                    style="color: black; text-decoration: none" id="dropdownMenuButton"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-bars"></i>
+                                            </button>
+                                            <div class="dropdown-menu" style="margin-left: -100px; width: 30px;"
+                                                 aria-labelledby="dropdownMenuButton">
+                                                <div class="dropdown-item">
+                                                    <i class="fa-regular fa-pen-to-square"></i> <a
+                                                        href="{% url 'update_post' post.pk %}"
+                                                        style="text-decoration: none; padding: 5px">Edit</a>
+                                                </div>
+                                                <div class="dropdown-item">
+                                                    <i class="fa-solid fa-trash-can" style="color: red"></i> <a
+                                                        href="{% url 'delete_post' post.pk %}"
+                                                        style="color: red; text-decoration: none; padding: 5px">Delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <style>
+                                        .dropdown-togggle::after {
+                                            display: none;
+                                        }
+                                    </style>
+                                    <p class="post-title">{{ post.title }}</p>
+                                    <p>
+                                        {% if post.snippet|length > 200 %}
+                                        {{ post.snippet|slice:":200" }}...
+                                        {% else %}
+                                        {{ post.snippet }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="blog-author" style="margin-right: 65px">
+                                    <div class="blog-author-img">
+                                        {% if post.author.profile.profile_pic %}
+                                        <img src="{{ post.author.profile.profile_pic.url }}" width="200" height="200">
+                                        {% else %}
+                                        <img src="{% static 'blog/images/default_profile_pic.webp' %}" class="card-img"
+                                             width="200"
+                                             height="200">
+                                        {% endif %}
+                                    </div>
+                                    <div class="blog-author-text">
+                                        <strong>{{ post.author.first_name }} {{ post.author.last_name }}</strong>
+                                        <span>{{ post.post_date }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div style="flex: 1; position: relative; right: 10px; bottom: -135px; margin-top: -20px">
+        <div class="category">
+            <h3>Post Categories</h3>
+            <div class="category-list">
+                {% for category in cat_menu %}
+                <div class="category-item">
+                    <a href="{% url 'category' category.category|slugify %}" style="text-decoration: none">
+                        <span class="category-category">{{ category.category }}</span>
+                    </a>
+                    <span class="category-count">{{ category.post_count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <style>
+
+            .category-category:hover {
+                color: #999;
+            }
+
+            .category {
+                flex-basis: 32%;
+                width: 360px;
+                margin-bottom: 30px;
+            }
+
+            .post-rating {
+                color: rgb(153, 153, 153);
+                font-size: 14px;
+                text-size-adjust: 100%;
+                box-sizing: border-box;
+                line-height: 21px;
+                font-family: Poppins, sans-serif;
+                position: relative;
+                left: 5px;
+            }
+
+            .category h3 {
+                background: #f44336;
+                color: #fff;
+                padding: 10px 0;
+                font-size: 18px;
+                margin: 0;
+                text-align: center;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+            .category-list {
+                padding: 20px;
+            }
+
+            .category-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+                margin-left: -15px;
+            }
+
+            .category-category {
+                color: #333;
+                font-family: Poppins, sans-serif;
+                font-size: 16px;
+                font-weight: 400;
+            }
+
+            .category-count {
+                color: #888;
+                font-size: 15px;
+                position: relative;
+                right: -13px;
+            }
+        </style>
+        <div class="rated_posts">
+            <h3 class="title">Most Rated Posts</h3>
+            {% for post in top_rated_posts %}
+            <div class="post_item" style="margin-top: 10px">
+                {% if post.header_image %}
+                <img src="{{ post.header_image.url }}" class="post_image" alt="{{ post.title }}"
+                     style="width: 90px; height: 90px"><br/>
+                {% else %}
+                <img style="width: 90px; height: 90px; transition: opacity 0.3s ease" class="post_image"
+                     src="{% static 'blog/images/photo_by_default.jpg'%}"><br/>
+                {% endif %}
+                <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h3 class="title_post"
+                                                                                               style="margin-left: 13px">
+                    {{ post.title }}</h3></a><br/>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="active-users">
+            <h3 class="active-users-title">Most Active Users</h3>
+            {% for user in active_users %}
+            <div class="user-item">
+                <span class="user">{{ user.first_name }} {{ user.last_name }}</span>
+                <span class="post-count">{{ user.post_count }} posts</span>
+            </div>
+            {% endfor %}
+        </div>
+        <style>
+            .user-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+                margin-left: -15px;
+            }
+
+            .user:hover {
+                color: #999;
+                transition: all ease 0.3s;
+            }
+
+            .user {
+                color: #333;
+                font-family: Poppins, sans-serif;
+                font-size: 16px;
+                font-weight: 400;
+                position: relative;
+                left: 15px;
+                transition: all ease 0.3s;
+            }
+
+            .post-count {
+                color: #888;
+                font-size: 15px;
+                position: relative;
+                right: 5px;
+            }
+
+            .active-users {
+                flex-basis: 32%;
+                width: 360px;
+                margin-bottom: 30px;
+            }
+
+            .active-users .active-users-title {
+                background: #f44336;
+                color: #fff;
+                padding: 10px 0;
+                font-size: 18px;
+                margin: 0;
+                text-align: center;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+            .post_image:hover {
+                opacity: 0.8;
+                transition: all ease 0.3s;
+            }
+
+            .post_item {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .title_post:hover {
+                color: #f44336;
+                transition: all ease 0.3s;
+            }
+
+            .title_post {
+                box-sizing: border-box;
+                cursor: pointer;
+                color: rgb(33, 38, 49);
+                font-family: Nunito, sans-serif;
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 19.8px;
+                text-size-adjust: 100%;
+                text-decoration-style: solid;
+                width: 160px;
+                transition: all ease 0.3s;
+            }
+
+            .rated_posts .title {
+                background: #f44336;
+                color: #fff;
+                padding: 10px 0;
+                font-size: 18px;
+                margin: 0;
+                text-align: center;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+
+            .rated_posts {
+                flex-basis: 32%;
+                width: 360px;
+                margin-bottom: 30px;
+            }
+        </style>
+    </div>
+</div>
+<br/><br/><br/><br/><br/><br/>
+<footer>
+    <br/>
+    <div class="row container" style="margin-left: 155px">
+        <div>
+            <img src="{% static 'blog/images/logo1.png' %}" style="transform: scale(1.4)">
+            <div class="text" style="color: silver">
+                <p>EchoVerse</p>
+                <p>for the best</p>
+            </div>
+            <ul class="footer-social-links">
+                <li class="flex">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                </li>
+
+                <li class="flex">
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                </li>
+
+                <li class="flex">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </li>
+
+                <li class="flex">
+                    <a href="#"><i class="fab fa-google"></i></a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="lg-text">Information</h3>
+            <div class="footer-links">
+                <a href="{% url 'about_us' %}">About Us</a>
+                <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+                <a href="{% url 'contact_us' %}">Contact Us</a>
+            </div>
+        </div>
+        <div>
+            <h3 class="lg-text">Our partners</h3>
+            <div class="footer-links">
+                <a href="https://medium.com/">Medium</a>
+                <a href="https://www.blogger.com/">Blogger</a>
+                <a href="https://twitter.com/">Twitter</a>
+                <a href="https://copyblogger.com/">Copyblogger</a>
+            </div>
+        </div>
+        <div>
+            <h3 class="lg-text">Have a question?</h3>
+            <div class="footer-contact-info">
+                <div>
+                    <span><i class="fas fa-map-marker-alt"></i></span>
+                    <span>701 Lake Parker, Street, MerryLand, USA</span>
+                </div>
+
+                <div>
+                    <span><i class="fas fa-phone"></i></span>
+                    <span>1240-322-3422</span>
+                </div>
+
+                <div>
+                    <span><i class="fas fa-paper-plane"></i></span>
+                    <span>info@echoverse.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="footer-text">Copyright &copy; 2024. Blog. All Rights Reserved.</p>
+</footer>
 {% else %}
 <h2>This page is not found</h2>
 {% endif %}

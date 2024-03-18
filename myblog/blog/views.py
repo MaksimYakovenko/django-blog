@@ -23,12 +23,12 @@ from django.core.paginator import Paginator
 # for category in categories_with_post_count:
 #     print(f"Категория '{category['category']}': {category['post_count']} постов")
 
-def PaginatorView(request):
-    post_list = Post.objects.all()
-    p = Paginator(post_list, 9)
-    page = request.GET.get('page')
-    page_obj = p.get_page(page)
-    return render(request, "list.html", {"page_obj": page_obj})
+# def PaginatorView(request):
+#     post_list = Post.objects.all()
+#     p = Paginator(post_list, 9)
+#     page = request.GET.get('page')
+#     page_obj = p.get_page(page)
+#     return render(request, "list.html", {"page_obj": page_obj})
 
 
 # def RatingTop5View(request):
@@ -108,9 +108,34 @@ def CategoryListView(request):
 
 def CategoryView(request, cats):
     category_posts = Post.objects.filter(category=cats.replace('-', ' '))
-    return render(request, 'categories.html', {'cats': cats.title().replace(
-        '-', ' '),
-        'category_posts': category_posts})
+    cat_menu = Post.objects.values('category').annotate(
+        post_count=Count('id'))
+    top_rated_posts = Post.objects.annotate(
+        total_likes_count=Count('likes'),
+        total_dislikes_count=Count('dislikes')
+    ).order_by('-total_likes_count', 'total_dislikes_count')[:4]
+    rated_posts = Post.objects.annotate(
+        total_likes_count=Count('likes'),
+        total_dislikes_count=Count('dislikes')
+    ).order_by('-total_likes_count', 'total_dislikes_count')
+    active_users = User.objects.annotate(
+        post_count=Count('post')
+    ).order_by('-post_count')[:4]
+    trending_posts = Post.objects.annotate(
+        comment_count=Count('comments')
+    ).order_by('-comment_count')[:3]
+
+    context = {
+        'cats': cats.title().replace('-', ' '),
+        'category_posts': category_posts,
+        'cat_menu': cat_menu,
+        'rated_posts': rated_posts,
+        'trending_posts': trending_posts,
+        'active_users': active_users,
+        'top_rated_posts': top_rated_posts
+    }
+
+    return render(request, 'categories.html', context)
 
 
 class ArticleDetailView(DetailView):

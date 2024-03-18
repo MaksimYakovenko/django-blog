@@ -7,6 +7,7 @@ from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 from .forms import SignUpForm, EditProfileForm, PasswordChangingForm, ProfilePageForm
 from blog.models import Profile, Post
+from django.db.models import Count
 
 class CreateProfilePageView(CreateView):
     model = Profile
