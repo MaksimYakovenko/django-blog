@@ -37,7 +37,6 @@ class Post(models.Model):
     title = models.CharField(max_length=255)
     header_image = models.ImageField(null=True, blank=True,
                                      upload_to='images/')
-    title_tag = models.CharField(max_length=255, default='blog')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     body = RichTextField(blank=True, null=True)
     post_date = models.DateField(auto_now_add=True)
@@ -45,9 +44,7 @@ class Post(models.Model):
     snippet = models.CharField(max_length=255)
     likes = models.ManyToManyField(User, related_name='blog_posts')
     dislikes = models.ManyToManyField(User, related_name='dislike_post')
-    post_category = models.ForeignKey(Category, related_name='posts',
-                                      on_delete=models.DO_NOTHING, null=True,
-                                      blank=True)
+
 
     def total_likes(self):
         return self.likes.count()
@@ -55,8 +52,6 @@ class Post(models.Model):
     def total_dislikes(self):
         return self.dislikes.count()
 
-    def total_rating(self):
-        return self.total_likes() - self.total_dislikes()
 
     def __str__(self):
         return self.title + ' | ' + str(self.author)
@@ -70,7 +65,7 @@ class Comment(models.Model):
     name = models.CharField(max_length=255)
     body = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='profile_pics/', blank=True)
+
 
     def __str__(self):
         return '%s - %s' % (self.post.title, self.name)
