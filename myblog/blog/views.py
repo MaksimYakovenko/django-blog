@@ -71,7 +71,7 @@ def LikeDislikeView(request, pk):
 class HomeView(ListView):
     model = Post
     template_name = 'home.html'
-    ordering = ['-post_date']
+    ordering = ['-post_date', '-id']
     paginate_by = 6
 
     def get_context_data(self, *args, **kwargs):

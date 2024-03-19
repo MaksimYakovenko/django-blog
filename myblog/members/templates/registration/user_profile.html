@@ -18,84 +18,101 @@
                 Recent posts by {{page_user.user.first_name }} {{ page_user.user.last_name }}
             </div>
             <br/><br/><br/><br/>
-            <div style="position: relative; top: -50px; left: -20px;">
-                {% for post in posts %}
-                <div class="box-blog">
-                    <div class="card-image">
-                        {% if post.header_image %}
-                        <img src="{{ post.header_image.url }}"
-                             style="border-radius: 15px;" class="image">
-                        {% else %}
-                        <img src="{% static 'blog/images/photo_by_default.jpg'%}"
-                             style="border-radius: 15px" class="image">
-                        {% endif %}
-                    </div>
-                    <div style="position: relative; transform: scale(1.06); right: -180px; bottom: 70px">
-                        <div class="card-category">
-                            {{ post.category }}
-                        </div>
-                        {% for top_post in rated_posts %}
-                        {% if top_post.id == post.id %}
-                        <span class="post-rating">Place: {{ forloop.counter }}</span>
-                        {% if forloop.first %} <i class="fa-solid fa-trophy"
-                                                  style="position: relative; left: 15px; bottom: 1px; color: goldenrod"
-                                                  title="winner by reactions"></i>
-                        {% endif %}
-                        {% if forloop.counter == 2 %}
-                        <i class="fa-solid fa-trophy"
-                           style="position: relative; left: 15px; bottom: 1px; color: silver"></i>
-                        {% endif %}
-                        {% if forloop.counter == 3 %}
-                        <i class="fa-solid fa-trophy"
-                           style="position: relative; left: 15px; bottom: 1px; color: #cd7f32"></i>
-                        {% endif %}
-                        {% endif %}
-                        {% endfor %}
-                        {% if user.is_authenticated %}
-                        {% if user.id == post.author.id %}
-                        <div class="dropdown" style="margin-left: auto">
-                            <button class="btn btn-link dropdown-togggle" type="button"
-                                    style="color: black; text-decoration: none" id="dropdownMenuButton"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bars"></i>
-                            </button>
-                            <div class="dropdown-menu" style="margin-left: -100px; width: 30px;"
-                                 aria-labelledby="dropdownMenuButton">
-                                <div class="dropdown-item">
-                                    <i class="fa-regular fa-pen-to-square"></i> <a
-                                        href="{% url 'update_post' post.pk %}"
-                                        style="text-decoration: none; padding: 5px">Edit</a>
-                                </div>
-                                <div class="dropdown-item">
-                                    <i class="fa-solid fa-trash-can" style="color: red"></i> <a
-                                        href="{% url 'delete_post' post.pk %}"
-                                        style="color: red; text-decoration: none; padding: 5px">Delete</a>
-                                </div>
+            {% for post in posts %}
+            <div class="box-blog" style="position: relative; top: -50px; left: -20px;">
+                <div class="card-image">
+                    {% if post.header_image %}
+                    <img src="{{ post.header_image.url }}"
+                         style="border-radius: 15px;" class="image">
+                    {% else %}
+                    <img src="{% static 'blog/images/photo_by_default.jpg'%}"
+                         style="border-radius: 15px" class="image">
+                    {% endif %}
+                </div>
+                <div style="position: relative; transform: scale(1.06); right: -180px; bottom: 100px">
+                    <div class="row">
+                        <div class="col-md-6 d-flex justify-content-between align-items-center">
+                            <div class="card-category" style="display: inline-block;">
+                                {{ post.category }} &mdash;
+                                {% for top_post in rated_posts %}
+                                {% if top_post.id == post.id %}
+                                <span class="post-rating"
+                                      style="position: relative; left: 1px; bottom: -1px; color: rgb(153, 153, 153); font-family: Poppins, sans-serif; font-weight: normal">Place: {{ forloop.counter }}</span>
+                                {% if forloop.first %}
+                                <i class="fa-solid fa-trophy" style="color: goldenrod"
+                                   title="winner by reactions"></i>
+                                {% endif %}
+                                {% if forloop.counter == 2 %}
+                                <i class="fa-solid fa-trophy" style="color: silver"></i>
+                                {% endif %}
+                                {% if forloop.counter == 3 %}
+                                <i class="fa-solid fa-trophy" style="color: #cd7f32"></i>
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
                             </div>
                         </div>
-                        {% endif %}
-                        {% endif %}
-                        <div class="card-body">
-                            <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h3
-                                    class="title_post">{{ post.title }}</h3></a>
-                        </div>
-                        <div class="card-snippet">
-                            <a href="{% url 'article-detail' post.pk %}"
-                               style="text-decoration: none; color: rgb(136, 136, 136)">
-                                <p>
-                                    {% if post.snippet|length > 200 %}
-                                    {{ post.snippet|slice:":200" }}...
-                                    {% else %}
-                                    {{ post.snippet }}
-                                    {% endif %}
-                                </p>
-                            </a>
+                        <div class="col-md-2">
+                            {% if user.is_authenticated %}
+                            {% if user.id == post.author.id %}
+                            <div class="dropdown" style="display: inline;">
+                                <button class="btn btn-link dropdown-togggle" type="button" style="color: black; position: relative; left: -30px"
+                                        id="dropdownMenuButton"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                </button>
+                                <div class="dropdown-menu" style="width: 100px;"
+                                     aria-labelledby="dropdownMenuButton">
+                                    <div class="dropdown-item">
+                                        <i class="fa-regular fa-pen-to-square"></i> <a
+                                            href="{% url 'update_post' post.pk %}"
+                                            style="text-decoration: none;">Edit</a>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <i class="fa-solid fa-trash-can" style="color: red;"></i> <a
+                                            href="{% url 'delete_post' post.pk %}"
+                                            style="color: red; text-decoration: none;">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endif %}
                         </div>
                     </div>
+                    <style>
+                        .dropdown-togggle::after {
+                            display: none;
+                        }
+
+                        .dropdown-togggle{
+                            transition: all ease 0.3s;
+                        }
+
+                        .dropdown-togggle:hover {
+                            transform: scale(1.3);
+                            transition: all ease 0.3s;
+                        }
+                    </style>
+                    <div class="card-body">
+                        <a href="{% url 'article-detail' post.pk %}" style="text-decoration: none"><h3
+                                class="title_post">{{ post.title }}</h3></a>
+                    </div>
+                    <div class="card-snippet">
+                        <a href="{% url 'article-detail' post.pk %}"
+                           style="text-decoration: none; color: rgb(136, 136, 136)">
+                            <p>
+                                {% if post.snippet|length > 200 %}
+                                {{ post.snippet|slice:":200" }}...
+                                {% else %}
+                                {{ post.snippet }}
+                                {% endif %}
+                            </p>
+                        </a>
+                    </div>
                 </div>
-                <br/>
-                {% endfor %}
             </div>
+            <br/>
+            {% endfor %}
         </section>
     </div>
     <div class="card" style="background-color: #f9f8ff; transform: scale(1.01);">
@@ -176,6 +193,15 @@
 
         .card-image {
             margin-top: -50px;
+        }
+
+        .box-blog:hover {
+            transform: scale(1.01);
+            transition: all ease 0.3s;
+        }
+
+        .box-blog {
+            transition: all ease 0.3s;
         }
 
 
@@ -316,8 +342,6 @@
         }
 
         .box-blog:hover {
-            background-color: #f9f8ff;
-            box-shadow: 16px 25px 50px rgba(0, 0, 0, 0.12);
             transform: scale(1.01);
             transition: all ease 0.3s;
         }
